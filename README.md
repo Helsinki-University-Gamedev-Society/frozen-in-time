@@ -1,1 +1,1 @@
-# game-jam-team-a
+# game-jam-team-1
