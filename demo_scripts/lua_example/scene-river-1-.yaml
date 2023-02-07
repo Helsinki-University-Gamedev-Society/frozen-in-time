@@ -1,0 +1,15 @@
+river-1:
+  description: "You are standing right next to a flowing river, next to a small cave entrance." 
+  complex-actions:
+    go_to_cave: |
+      go_to("cave-1")
+
+river:
+  description: "A swiflty flowing river with a glimmering surface"
+  complex-actions:
+    pick_up_water: |
+      if not (inventory.contains("bucket")) then
+          return "You have nothing to pick up water with!"
+      elseif inventory.get("bucket").contents == nil then
+          inventory.get("bucket").contents = "water"
+          return "You fill your bucket with water"

@@ -1,0 +1,42 @@
+cave-1:
+  description: "As you look around, you find yourself in a broad cave with a short ceiling at about 2 metres high. There are several alcoves, one of them which contains smithing materials. There, working at an anvil, you see a stout dwarf hammering away at a sword." 
+  simple-actions:
+    shout: "As your shout echoes around the cave, Jared turns around and tells you to knock it off."
+  complex-actions:
+    exit: |
+      go_to("river")
+
+jared:
+  description: "A stout dwarf with a ruddy beard, standing at approximately 110cm tall."
+  synonyms:
+    - "dwarf"
+    - "smith"
+    - "person"
+    - "man"
+  complex-actions:
+    talk: |
+      if this.completed then
+          return "Thanks for the water, but please leave now!"
+      elseif inventory.contains("bucket") and inventory.get("bucket").contents == "water" then
+          inventory.get("bucket").move_to("cave-1")
+          this.completed = true
+          return "You put the now full bucket back in its original location next to Jared, who turns around, gives a thumbs up and returns back to his work."
+      else
+          return "Hello there, I am Jared. I don't know what you are doing in my house, but I've been working away at this here sword, and I'm running out of water to dip it in, could you go fetch me some? Take the bucket right next to me. You can find water outside."
+      end
+  data:
+    completed: false
+
+bucket:
+  description: "A slighty rusty and rather big steel bucket."
+  synonyms:
+    - "water bucket"
+    - "steel bucket"
+    - "iron bucket"
+  complex-actions:
+    pick_up: |
+      if this.contents == nil then
+          this.move_to("inventory")
+      end
+  data: |
+    contents = nil
