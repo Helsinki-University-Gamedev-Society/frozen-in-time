@@ -1,27 +1,26 @@
-#include "SDL.h"
+#include "ui/ui.hpp"
 
 int main(int argc, char *argv[])
 {
-  SDL_Init(SDL_INIT_VIDEO);
+    UI ui = UI();
 
-  SDL_Window *window = SDL_CreateWindow(
-    "SDL2Test",
-    SDL_WINDOWPOS_UNDEFINED,
-    SDL_WINDOWPOS_UNDEFINED,
-    640,
-    480,
-    0
-  );
+    bool quit = false;
 
-  SDL_Renderer *renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_SOFTWARE);
-  SDL_SetRenderDrawColor(renderer, 0, 0, 0, SDL_ALPHA_OPAQUE);
-  SDL_RenderClear(renderer);
-  SDL_RenderPresent(renderer);
+    while(not quit) {
+	ui.update(); // Update UI
 
-  SDL_Delay(3000);
+	UIEvent event;
+	while(ui.poll(&event)) { // Keep polling events until there are no more
+	    if(event.type == UIEvent_Type::EXIT) {
+		quit = true;
+	    }
+	}
 
-  SDL_DestroyWindow(window);
-  SDL_Quit();
+	ui.render(); // Render game
 
-  return 0;
+	SDL_Delay(10); // Sleep to give CPU a break
+    }
+
+
+    return 0;
 }
