@@ -24,6 +24,8 @@ using std::string;
 #define WINDOW_WIDTH 1366
 #define WINDOW_HEIGHT 768
 
+#define MESSAGE_SPACING 20
+
 enum class UIEvent_Type {
     EXIT,
     SWITCH_TIMELINE,
@@ -36,12 +38,10 @@ public:
 
 class UI {
 private:
-    double time_last;
-
     bool diary_on_screen = true;
     EaseOutExpoAnimation slide_anim;
 public:
-    UI();
+    UI(shared_ptr<GraphicsContext> ctx);
     ~UI();
 
     void update();
@@ -51,16 +51,12 @@ private: // Private SDL2-related functions
     void update_animations();
     void render_background();
     void render_map();
-    void play_sound(Sound sound);
 private:
     queue<UIEvent> events;
-
-    SDL_Window *window { nullptr };
-    SDL_Renderer *renderer { nullptr };
-
-    shared_ptr<AssetManager> assets;
+    shared_ptr<GraphicsContext> ctx;
 private: // Child elements
     UIInventory inventory;
+    UIMessageLog diary_log;
 };
 
 #endif // _UI_UI_

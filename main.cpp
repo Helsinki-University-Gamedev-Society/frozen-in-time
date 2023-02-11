@@ -1,18 +1,12 @@
 #include "ui/ui.hpp"
+#include "ui/ui_elements.hpp"
+#include <SDL_ttf.h>
 
 int main(int argc, char *argv[])
 {
-    if(SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO) < 0) {
-	printf("SDL could not initialize! SDL Error: %s\n", SDL_GetError());
-	return 1;
-    }
+    auto ctx = init_graphics();
 
-    if(Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 2048) < 0) {
-	printf("SDL_mixer could not initialize! SDL_mixer Error: %s\n", Mix_GetError());
-	return 1;
-    }
-
-    UI ui = UI();
+    UI ui = UI(ctx);
 
     bool quit = false;
 
