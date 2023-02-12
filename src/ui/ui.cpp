@@ -1,12 +1,14 @@
-#include <SDL_keycode.h>
-
-#include <SDL_rect.h>
+#include <SDL_keyboard.h>
+#include <algorithm>
 #include <iostream>
 #include <memory>
 
 #include <SDL_events.h>
+#include <SDL_keycode.h>
+#include <SDL_rect.h>
 #include <SDL_render.h>
 #include <SDL_timer.h>
+#include <SDL_video.h>
 
 #include "ui/animations.hpp"
 #include "ui/assets.hpp"
@@ -39,25 +41,55 @@ shared_ptr<GraphicsContext> init_graphics() {
     return std::make_shared<GraphicsContext>();
 }
 
+SDL_Rect GraphicsContext::game_viewport() {
+    int width, height;
+    SDL_GetWindowSize(window, &width, &height);
+
+    int game_width = std::min(width, 16 * height / 9);
+    int game_height = game_width * 9 / 16;
+
+    int top_left_x = (width - game_width) / 2;
+    int top_left_y = (height - game_height) / 2;
+
+    return SDL_Rect{top_left_x, top_left_y, game_width, game_height};
+}
+
+SDL_Rect GraphicsContext::viewport_from_layout(SDL_Rect layout) {
+    SDL_Rect game_rect = game_viewport();
+	
+    double scale = ((double) game_rect.w) / ((double) LAYOUT_BACKGROUND.w);
+
+    return SDL_Rect{
+	(int) (game_rect.x + layout.x * scale),
+	(int) (game_rect.y + layout.y * scale),
+	(int) (layout.w * scale),
+	(int) (layout.h * scale),
+    };
+}
+
 UI::UI(shared_ptr<GraphicsContext> ctx)
     : ctx(ctx)
     , slide_anim(EaseOutExpoAnimation(SDL_Point{7 * WINDOW_WIDTH / 14, WINDOW_HEIGHT / 10}, SDL_Point{9 * WINDOW_WIDTH / 14, WINDOW_HEIGHT / 10}, 1.0))
     , inventory(UIInventory(ctx, 8))
-    , diary_log(UIMessageLog(ctx))
+    , diary(UIDiary(ctx))
 {
-    inventory.add_item(Item::CARROT);
-    inventory.add_item(Item::CARROT);
-    inventory.add_item(Item::CARROT);
+    inventory.add_item(Item::PICKAXE);
+    inventory.add_item(Item::SHOVEL);
+    inventory.add_item(Item::CHISEL);
     inventory.add_item(Item::CARROT);
     inventory.add_item(Item::CARROT);
 
     ctx->play_sound(Sound::DIARY_SCRIBBLE);
     ctx->play_sound(Sound::DIARY_SLIDE);
+
+    SDL_StartTextInput();
 }
 
 UI::~UI() {
     // SDL_DestroyWindow(window);
     SDL_Quit();
+
+    SDL_StopTextInput();
 }
 
 void UI::update() {
@@ -68,27 +100,23 @@ void UI::update() {
 	}
 	if(e.type == SDL_KEYDOWN) {
 	    if(e.key.keysym.sym == SDLK_TAB) {
-		if(slide_anim.is_finished()) {
-		    if(diary_on_screen) {
-			slide_anim = EaseOutExpoAnimation(SDL_Point{9 * WINDOW_WIDTH / 14, WINDOW_HEIGHT / 10}, SDL_Point{7 * WINDOW_WIDTH / 14, WINDOW_HEIGHT / 10}, 1.0);
-		    } else {
-			slide_anim = EaseOutExpoAnimation(SDL_Point{7 * WINDOW_WIDTH / 14, WINDOW_HEIGHT / 10}, SDL_Point{9 * WINDOW_WIDTH / 14, WINDOW_HEIGHT / 10}, 1.0);
-		    }
+		diary_on_screen = not diary_on_screen;
+		diary.set_revealed(diary_on_screen);
 
-		    slide_anim.start();
-		    ctx->play_sound(Sound::DIARY_SLIDE);
-
-		    diary_on_screen = not diary_on_screen;
-		    events.push(UIEvent{UIEvent_Type::SWITCH_TIMELINE});
-		}
+		events.push(UIEvent{UIEvent_Type::SWITCH_TIMELINE});
+	    } else if(e.key.keysym.sym == SDLK_BACKSPACE) {
+		diary.input.remove_character();
 	    } else if(e.key.keysym.sym == SDLK_RETURN) {
-		ctx->play_sound(Sound::DIARY_SCRIBBLE);
-		diary_log.add_text(Text(ctx->renderer,
-					"This is some test text! Hahahahahah! I am having a great time! I hope you are enjoying this here text adventure!!!!!",
+		diary.input.clear();
+		diary.log.add_message(Text(ctx->renderer,
+					"This is some test text!\nHahahahahah! I am having a great time! I hope you are enjoying this here text adventure!!!!!",
 					ctx->assets.fonts[Font::DIARY_FONT],
 					SDL_Color{0x00, 0x00, 0x00, 0xFF},
-					500));
+					   500).get_texture());
+		ctx->play_sound(Sound::DIARY_SCRIBBLE);
 	    }
+	} else if(e.type == SDL_TEXTINPUT) {
+	    diary.input.add_string(e.text.text);
 	}
     }
 }
@@ -105,22 +133,19 @@ bool UI::poll(UIEvent *event) {
 }
 
 void UI::render_background() {
-    SDL_Rect full_viewport {0, 0, WINDOW_WIDTH, WINDOW_HEIGHT};
+    // SDL_Rect full_viewport {0, 0, WINDOW_WIDTH, WINDOW_HEIGHT};
+    SDL_Rect viewport = ctx->viewport_from_layout(LAYOUT_BACKGROUND);
 
-    SDL_RenderSetViewport(ctx->renderer, &full_viewport);
+    SDL_RenderSetViewport(ctx->renderer, &viewport);
     SDL_RenderCopy(ctx->renderer, ctx->assets.textures[Texture::BACKGROUND], NULL, NULL);
 }
 
 void UI::render_map() {
     SDL_Point left_corner = slide_anim.get_current_state();
-    SDL_Rect map_viewport {left_corner.x, left_corner.y, 4 * WINDOW_WIDTH / 14, 4 * WINDOW_HEIGHT / 10};
+    SDL_Rect viewport = ctx->viewport_from_layout(LAYOUT_MAP);
 
-    SDL_RenderSetViewport(ctx->renderer, &map_viewport);
+    SDL_RenderSetViewport(ctx->renderer, &viewport);
     SDL_RenderCopy(ctx->renderer, ctx->assets.textures[Texture::MAP], NULL, NULL);
-
-    // SDL_SetRenderDrawColor(renderer, 0xFF, 0, 0, SDL_ALPHA_OPAQUE);
-    // SDL_Rect rect{0, 50, 100, 100};
-    // SDL_RenderFillRect(renderer, &rect);
 }
 
 void UI::update_animations() {
@@ -140,9 +165,8 @@ void UI::render() {
     render_background();
     render_map();
 
-    diary_log.render(SDL_Rect{0, 1 * WINDOW_HEIGHT / 10, 7 * WINDOW_WIDTH / 14, 8 * WINDOW_HEIGHT / 10});
-
-    inventory.render(SDL_Rect{9 * WINDOW_WIDTH / 14, 6 * WINDOW_HEIGHT / 10, 4 * WINDOW_WIDTH / 14, 4 * WINDOW_HEIGHT / 10});
+    diary.render();
+    inventory.render();
 
     // Present
     SDL_RenderPresent(ctx->renderer);

@@ -11,10 +11,13 @@
 using std::map;
 using std::string;
 
-#define FONT_SIZE 20
+#define FONT_SIZE 30
 
 enum class Item {
     CARROT = 0,
+    PICKAXE,
+    SHOVEL,
+    CHISEL,
 };
 
 enum class Sound {
@@ -25,7 +28,11 @@ enum class Sound {
 enum class Texture {
     BACKGROUND = 0,
     MAP,
+    DIARY,
     CARROT,
+    PICKAXE,
+    SHOVEL,
+    CHISEL,
 };
 
 enum class Font {
@@ -34,10 +41,15 @@ enum class Font {
 
 const map<Texture, string> TEXTURE_TO_FILE = {
     // {Texture::BACKGROUND, "dark-wood-background.jpg"},
-    {Texture::BACKGROUND, "wooden-background3.png"},
+    {Texture::BACKGROUND, "background.png"},
     // {Texture::MAP,        "diary-background.jpg"},
     {Texture::MAP,        "parchment2.png"},
+    {Texture::DIARY,      "diary.png"},
     {Texture::CARROT,     "vili-carrot.png"},
+
+    {Texture::PICKAXE,    "item_pickaxe.png"},
+    {Texture::SHOVEL,     "item_shovel.png"},
+    {Texture::CHISEL,     "item_chisel.png"},
 };
 
 const map<Sound, string> SOUND_TO_FILE = {
@@ -50,7 +62,10 @@ const map<Font, string> FONT_TO_FILE = {
 };
 
 const map<Item, Texture> ITEM_TO_TEXTURE = {
-    {Item::CARROT, Texture::CARROT}
+    {Item::CARROT,  Texture::CARROT},
+    {Item::PICKAXE, Texture::PICKAXE},
+    {Item::SHOVEL,  Texture::SHOVEL},
+    {Item::CHISEL,  Texture::CHISEL},
 };
 
 class AssetManager {

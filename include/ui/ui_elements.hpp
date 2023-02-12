@@ -10,6 +10,7 @@
 
 #include "ui/animations.hpp"
 #include "ui/assets.hpp"
+#include "ui/layout.hpp"
 #include "ui/text.hpp"
 
 using std::shared_ptr;
@@ -18,7 +19,10 @@ using std::vector;
 class GraphicsContext {
 public:
     GraphicsContext();
+
     void play_sound(Sound sound);
+    SDL_Rect viewport_from_layout(SDL_Rect layout);
+    SDL_Rect game_viewport();
 public:
     SDL_Window *window { nullptr };
     SDL_Renderer *renderer { nullptr };
@@ -30,7 +34,7 @@ shared_ptr<GraphicsContext> init_graphics();
 class UIInventory {
 public:
     UIInventory(shared_ptr<GraphicsContext> ctx, int items_hori);
-    void render(SDL_Rect viewport);
+    void render();
 
     void add_item(Item item);
 private:
@@ -48,33 +52,51 @@ public:
 
 class UIMessageLog {
 public:
-    UIMessageLog(shared_ptr<GraphicsContext> ctx);
-    void render(SDL_Rect viewport);
+    UIMessageLog(shared_ptr<GraphicsContext> ctx, pair<int, int> dims);
+    void render(SDL_Point top_left);
 
-    void add_text(Text text);
+    void add_message(SDL_Texture *texture);
 private:
-    Font font;
+    pair<int, int> dims;
 
-    vector<TextAppearAnimation> messages;
+    vector<FadeInAnimation> messages;
     shared_ptr<GraphicsContext> ctx;
 };
 
 class UIInputField {
 public:
-    UIInputField(shared_ptr<GraphicsContext> ctx, Font font, SDL_Color color, int default_width);
-    void render(SDL_Rect viewport);
+    UIInputField(shared_ptr<GraphicsContext> ctx, Font font, SDL_Color color, pair<int, int> dims);
+    void render(SDL_Point top_left);
 
-    void add_character(char c);
+    void add_string(string s);
     void remove_character();
+    void clear();
 private:
     Font font;
     SDL_Color color;
-    int default_width;
+    pair<int, int> dims;
 
     string content;
     Text text;
+    FlashingCursorAnimation cursor_visible;
 
     shared_ptr<GraphicsContext> ctx;
+};
+
+class UIDiary {
+public:
+    UIDiary(shared_ptr<GraphicsContext> ctx);
+    void render();
+
+    void set_revealed(bool reveal);
+public:
+    UIMessageLog log;
+    UIInputField input;
+private:
+    bool revealed;
+
+    shared_ptr<GraphicsContext> ctx;
+    EaseOutExpoAnimation position;
 };
 
 #endif // _UI_ELEMENTS_

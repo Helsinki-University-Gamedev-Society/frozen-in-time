@@ -45,26 +45,35 @@ bool EaseOutExpoAnimation::is_finished() {
     return current_time >= total_time;
 }
 
-TextAppearAnimation::TextAppearAnimation(Text text, double time)
-    : text(text)
+FadeInAnimation::FadeInAnimation(SDL_Texture *texture, double time)
+    : texture(texture)
     , total_time(time) {}
 
-void TextAppearAnimation::progress(double dt) {
+void FadeInAnimation::progress(double dt) {
     current_time += dt;
     current_time = current_time > total_time  ? total_time : current_time;
 }
 
-void TextAppearAnimation::render(SDL_Renderer *renderer, SDL_Point point) {
-    auto [w, h] = text.get_size();
-    SDL_Rect target{point.x, point.y, w, h};
-
-    // std::cout << "Width: " << w << ", height: " << h << std::endl;
+void FadeInAnimation::render(SDL_Renderer *renderer, SDL_Rect target) {
+    auto [w, h] = get_size();
 
     if(current_time >= total_time) {
-	SDL_RenderCopy(renderer, text.get_texture(), NULL, &target);
+	SDL_RenderCopy(renderer, texture, NULL, &target);
     }
 }
 
-pair<int, int> TextAppearAnimation::get_size() {
-    return text.get_size();
+pair<int, int> FadeInAnimation::get_size() {
+    int width, height;
+    SDL_QueryTexture(texture, NULL, NULL, &width, &height);
+    return {width, height};
+
+}
+
+FlashingCursorAnimation::FlashingCursorAnimation(double time_vis, double time_invis)
+    : time_vis(time_vis)
+    , time_invis(time_invis) {}
+
+void FlashingCursorAnimation::progress(double dt) {
+    time_mod = fmod(time_mod + dt, time_vis + time_invis);
+    visible = time_mod < time_vis;
 }

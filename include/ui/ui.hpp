@@ -21,8 +21,11 @@ using std::shared_ptr;
 using std::string;
 
 #define WINDOW_TITLE "GAMING TIME!"
-#define WINDOW_WIDTH 1366
-#define WINDOW_HEIGHT 768
+// #define WINDOW_WIDTH 1366
+// #define WINDOW_HEIGHT 768
+
+#define WINDOW_WIDTH 1920
+#define WINDOW_HEIGHT 1080
 
 #define MESSAGE_SPACING 20
 
@@ -56,7 +59,7 @@ private:
     shared_ptr<GraphicsContext> ctx;
 private: // Child elements
     UIInventory inventory;
-    UIMessageLog diary_log;
+    UIDiary diary;
 };
 
 #endif // _UI_UI_

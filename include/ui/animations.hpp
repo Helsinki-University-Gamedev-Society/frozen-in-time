@@ -36,20 +36,36 @@ private:
     double current_time = 0;
 };
 
-class TextAppearAnimation: public Animation {
+class FadeInAnimation: public Animation {
 public:
-    TextAppearAnimation(Text text, double time);
+    FadeInAnimation(SDL_Texture *texture, double time);
 
     bool is_finished();
-    void render(SDL_Renderer *renderer, SDL_Point location);
+    void render(SDL_Renderer *renderer, SDL_Rect target);
     pair<int, int> get_size();
 private:
     void progress(double dt);
 private:
-    Text text;
+    SDL_Texture *texture;
 
     double total_time;
     double current_time = 0;
+};
+
+class FlashingCursorAnimation: public Animation {
+private:
+    bool visible;
+public:
+    FlashingCursorAnimation(double time_vis, double time_invis);
+
+    bool is_visible() {return visible;}
+private:
+    void progress(double dt);
+private:
+    double time_vis;
+    double time_invis;
+
+    double time_mod = 0;
 };
 
  #endif // _UI_ANIMATIONS_
