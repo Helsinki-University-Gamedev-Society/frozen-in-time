@@ -51,6 +51,7 @@ bool UIEvent_of_type(UIEvent &event) {
 class UI {
 private:
     bool diary_on_screen = true;
+    double fps = 60;
 public:
     UI(shared_ptr<GraphicsContext> ctx);
     ~UI();
@@ -58,16 +59,17 @@ public:
     void update();
     bool poll(UIEvent *event);
     void render();
+public: // Child elements
+    UIInventory inventory;
+    UIComputer computer;
+    UIDiary diary;
 private: // Private SDL2-related functions
     void render_background();
     void render_map();
 private:
+    double time_since_last_render = 0;
     queue<UIEvent> events;
     shared_ptr<GraphicsContext> ctx;
-private: // Child elements
-    UIInventory inventory;
-    UIComputer computer;
-    UIDiary diary;
 };
 
 #endif // _UI_UI_

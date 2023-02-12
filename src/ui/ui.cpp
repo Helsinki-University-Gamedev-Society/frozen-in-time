@@ -17,7 +17,7 @@
 
 GraphicsContext::GraphicsContext()
     : window(SDL_CreateWindow(WINDOW_TITLE, SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, WINDOW_WIDTH, WINDOW_HEIGHT, 0))
-    , renderer(SDL_CreateRenderer(window, -1, SDL_RENDERER_SOFTWARE))
+    , renderer(SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED))
     , assets(AssetManager(renderer)) {}
 
 void GraphicsContext::play_sound(Sound sound) {
@@ -189,4 +189,16 @@ void UI::render() {
 
     // Present
     SDL_RenderPresent(ctx->renderer);
+
+    // Delay to match the framerate
+
+    int time_now = SDL_GetPerformanceCounter();
+    double time_taken = (double) (time_now - time_since_last_render) / ((double) SDL_GetPerformanceFrequency());
+    time_taken = time_taken < 0 ? 0 : time_taken; // Sometimes this is zero
+
+    std::cout << "SPF: " << 1/fps << ", time taken: " << time_taken << ", " << std::max(0.0, (1/fps - time_taken) * 1000) << std::endl;
+
+    SDL_Delay(std::max(0.0, (1/fps - time_taken) * 1000));
+
+    time_since_last_render = time_now;
 }

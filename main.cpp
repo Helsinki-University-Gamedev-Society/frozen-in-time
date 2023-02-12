@@ -1,6 +1,9 @@
+#include <iostream>
+
+#include <SDL_ttf.h>
+
 #include "ui/ui.hpp"
 #include "ui/ui_elements.hpp"
-#include <SDL_ttf.h>
 
 int main(int argc, char *argv[])
 {
@@ -17,12 +20,19 @@ int main(int argc, char *argv[])
 	while(ui.poll(&event)) { // Keep polling events until there are no more
 	    if(UIEvent_of_type<UIEvent_EXIT>(event)) {
 		quit = true;
+	    } else if(UIEvent_of_type<UIEvent_SEND_COMMAND>(event)) {
+		UIEvent_SEND_COMMAND command_event = std::get<UIEvent_SEND_COMMAND>(event);
+		if(command_event.diary) {
+		    std::cout << "Received diary input: " << command_event.command << std::endl;
+		} else {
+		    std::cout << "Received non-diary input: " << command_event.command << std::endl;
+		}
 	    }
 	}
 
-	ui.render(); // Render game
+	ui.render(); // Render UI
 
-	SDL_Delay(10); // Sleep to give CPU a break
+	SDL_Delay(10);
     }
 
 
