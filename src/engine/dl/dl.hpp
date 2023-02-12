@@ -15,50 +15,23 @@
  *
  * =====================================================================================
  */
+
 #include <map>
 #include <string>
 
-class UGL
-{
-	public:
-	std::string label;
-};
+#include "entity.hpp"
+using namespace Entity;
 
-class Command
-{
-	public:
-	UGL verb;
-	UGL item1;
-	UGL item2;
-};
-
-class Action
-{
-	public:
-	
-}
-
-class Scene
-{
-	public:
-	std::map<Command, Action>
-};
-
-
-class DataLayer
+struct DataLayer : Parser::Serialisable
 {
 	// static section
-	public:
-	std::map<std::string, UGL> UGLDefinitions;
-	Scene* GlobalScene;
+	UGL* ugl;
+	Scene* globalScene;
 
 	// stateful section
-	Inventory Inventory;
-	UGLLabel CurrentSceneLabel;
+	Inventory inventory;
 
 	// dynamic section
-	Scene* CurrentScene;
-	
-	//DataLayer(UGLLabel currentScene);
-	//~DataLayer();
+	Scene* currentScene;
+	Scene* bufferScene;
 };

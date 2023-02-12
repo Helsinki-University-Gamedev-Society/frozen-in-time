@@ -1,12 +1,12 @@
 /*
  * =====================================================================================
  *
- *       Filename:  dl.cpp
+ *       Filename:  sparser.cpp
  *
- *    Description:  data layer access methods 
+ *    Description:  sparser definitions 
  *
  *        Version:  1.0
- *        Created:  02/10/2023 10:31:03 PM
+ *        Created:  02/13/2023 12:19:30 AM
  *       Revision:  none
  *       Compiler:  gcc
  *
@@ -16,4 +16,13 @@
  * =====================================================================================
  */
 
-#include "dl.hpp"
+#include "sparser.hpp"
+
+std::string Parser::parseTo(std::string from, std::string& to, std::string delim)
+{
+	std::size_t pos = from.find(delim);
+	to.assign(from.substr(0,pos));
+
+	return from.substr(pos+1);
+};
+
