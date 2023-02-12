@@ -15,7 +15,7 @@ int main(int argc, char *argv[])
 
 	UIEvent event;
 	while(ui.poll(&event)) { // Keep polling events until there are no more
-	    if(event.type == UIEvent_Type::EXIT) {
+	    if(UIEvent_of_type<UIEvent_EXIT>(event)) {
 		quit = true;
 	    }
 	}

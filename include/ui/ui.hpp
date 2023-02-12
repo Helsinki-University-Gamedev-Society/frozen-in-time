@@ -10,6 +10,7 @@
 #include <memory>
 #include <queue>
 #include <string>
+#include <variant>
 #include <vector>
 
 #include "ui/assets.hpp"
@@ -34,15 +35,22 @@ enum class UIEvent_Type {
     SWITCH_TIMELINE,
 };
 
-struct UIEvent {
-public:
-    UIEvent_Type type;
+struct UIEvent_EXIT {};
+struct UIEvent_SEND_COMMAND {
+    bool diary;
+    string command;
 };
+
+using UIEvent = std::variant<UIEvent_EXIT, UIEvent_SEND_COMMAND>;
+
+template <typename T>
+bool UIEvent_of_type(UIEvent &event) {
+    return std::holds_alternative<T>(event);
+}
 
 class UI {
 private:
     bool diary_on_screen = true;
-    EaseOutExpoAnimation slide_anim;
 public:
     UI(shared_ptr<GraphicsContext> ctx);
     ~UI();
@@ -51,7 +59,6 @@ public:
     bool poll(UIEvent *event);
     void render();
 private: // Private SDL2-related functions
-    void update_animations();
     void render_background();
     void render_map();
 private:
@@ -59,6 +66,7 @@ private:
     shared_ptr<GraphicsContext> ctx;
 private: // Child elements
     UIInventory inventory;
+    UIComputer computer;
     UIDiary diary;
 };
 

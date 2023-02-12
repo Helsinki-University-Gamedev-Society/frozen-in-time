@@ -16,29 +16,13 @@
 using std::shared_ptr;
 using std::vector;
 
-class GraphicsContext {
-public:
-    GraphicsContext();
-
-    void play_sound(Sound sound);
-    SDL_Rect viewport_from_layout(SDL_Rect layout);
-    SDL_Rect game_viewport();
-public:
-    SDL_Window *window { nullptr };
-    SDL_Renderer *renderer { nullptr };
-    AssetManager assets;
-};
-
-shared_ptr<GraphicsContext> init_graphics();
-
 class UIInventory {
 public:
-    UIInventory(shared_ptr<GraphicsContext> ctx, int items_hori);
+    UIInventory(shared_ptr<GraphicsContext> ctx);
     void render();
 
     void add_item(Item item);
 private:
-    int items_hori;
     shared_ptr<GraphicsContext> ctx;
 private:
     vector<Item> items;
@@ -52,14 +36,16 @@ public:
 
 class UIMessageLog {
 public:
-    UIMessageLog(shared_ptr<GraphicsContext> ctx, pair<int, int> dims);
+    UIMessageLog(shared_ptr<GraphicsContext> ctx, Font font, SDL_Color color, pair<int, int> dims);
     void render(SDL_Point top_left);
 
-    void add_message(SDL_Texture *texture);
+    void add_message(string message);
 private:
+    Font font;
+    SDL_Color color;
     pair<int, int> dims;
 
-    vector<FadeInAnimation> messages;
+    vector<FadeInText> messages;
     shared_ptr<GraphicsContext> ctx;
 };
 
@@ -68,6 +54,7 @@ public:
     UIInputField(shared_ptr<GraphicsContext> ctx, Font font, SDL_Color color, pair<int, int> dims);
     void render(SDL_Point top_left);
 
+    string get_content();
     void add_string(string s);
     void remove_character();
     void clear();
@@ -97,6 +84,17 @@ private:
 
     shared_ptr<GraphicsContext> ctx;
     EaseOutExpoAnimation position;
+};
+
+class UIComputer {
+public:
+    UIComputer(shared_ptr<GraphicsContext> ctx);
+    void render();
+public:
+    UIMessageLog log;
+    UIInputField input;
+private:
+    shared_ptr<GraphicsContext> ctx;
 };
 
 #endif // _UI_ELEMENTS_

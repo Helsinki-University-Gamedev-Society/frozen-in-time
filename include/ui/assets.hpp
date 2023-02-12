@@ -11,8 +11,6 @@
 using std::map;
 using std::string;
 
-#define FONT_SIZE 30
-
 enum class Item {
     CARROT = 0,
     PICKAXE,
@@ -36,7 +34,8 @@ enum class Texture {
 };
 
 enum class Font {
-    DIARY_FONT = 0,
+    COMPUTER_FONT = 0,
+    DIARY_FONT = 1,
 };
 
 const map<Texture, string> TEXTURE_TO_FILE = {
@@ -58,7 +57,13 @@ const map<Sound, string> SOUND_TO_FILE = {
 };
 
 const map<Font, string> FONT_TO_FILE = {
+    {Font::COMPUTER_FONT, "pixelfjverdana.regular.ttf"},
     {Font::DIARY_FONT, "dpcomic.regular.ttf"},
+};
+
+const map<Font, int> FONT_TO_SIZE = {
+    {Font::COMPUTER_FONT, 15},
+    {Font::DIARY_FONT, 40},
 };
 
 const map<Item, Texture> ITEM_TO_TEXTURE = {

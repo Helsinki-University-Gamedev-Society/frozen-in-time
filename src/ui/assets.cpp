@@ -37,7 +37,7 @@ void AssetManager::load_assets(SDL_Renderer *renderer) {
 
     for(const auto& [name, path] : FONT_TO_FILE) {
 	TTF_Font *font;
-	if((font = TTF_OpenFont(("assets/" + path).c_str(), FONT_SIZE)) == NULL) {
+	if((font = TTF_OpenFont(("assets/" + path).c_str(), FONT_TO_SIZE.at(name))) == NULL) {
 	    std::cout << "ERROR: Could not find sound " << path << std::endl;
 	}
 	fonts[name] = font;
