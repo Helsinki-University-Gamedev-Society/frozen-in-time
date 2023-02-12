@@ -31,45 +31,6 @@
 
 namespace Core 
 {
-	enum class ActionEnum // the parsing for this will be done by the sparser, should be defined in dl --> done once when loading, then makes all action look ups faster
-	{
-		UPDATE,
-		INSERT,
-		LOAD,
-		WRITE
-	};
-	
-	class Serialisable
-	{
-		public:
-		virtual std::string Serialise();
-		virtual void Deserialise(std::string from);
-	};
-	
-	class Action : Serialisable
-	{
-		public:
-		virtual void Execute();
-	};
-	
-	class UpdateAction : Action
-	{
-		public:
-		UpdateAction(std::string action);
-		void Execute();
-	}
-	
-	class ActionRegistrar
-	{
-		static const std::map<ActionEnum, std::function<Action*(std::string)>> Resolver = 
-		{
-			{ActionEnum::UPDATE, [](std::string x){return new UpdateAction(x);}}
-		}; // we could play with constexpr containers to improve performance
-		
-		public:
-		static void GetAction(Action* out, std::string action);
-	};
-	
 	class Core
 	{
 		private:

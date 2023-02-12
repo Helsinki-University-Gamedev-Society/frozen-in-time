@@ -1,12 +1,15 @@
+#ifndef CPARSER_HPP
+#define CPARSER_HPP
+
 /*
  * =====================================================================================
  *
- *       Filename:  dl.cpp
+ *       Filename:  cparser.hpp
  *
- *    Description:  data layer access methods 
+ *    Description:  cparser declarations 
  *
  *        Version:  1.0
- *        Created:  02/10/2023 10:31:03 PM
+ *        Created:  02/13/2023 12:28:57 AM
  *       Revision:  none
  *       Compiler:  gcc
  *
@@ -16,4 +19,9 @@
  * =====================================================================================
  */
 
-#include "dl.hpp"
+class Cparser
+{
+
+};
+
+#endif /* CPARSER_HPP */
