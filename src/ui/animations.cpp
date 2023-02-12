@@ -1,3 +1,5 @@
+#include <SDL_ttf.h>
+#include <algorithm>
 #include <cmath>
 #include <iostream>
 
@@ -45,28 +47,37 @@ bool EaseOutExpoAnimation::is_finished() {
     return current_time >= total_time;
 }
 
-FadeInAnimation::FadeInAnimation(SDL_Texture *texture, double time)
-    : texture(texture)
+FadeInText::FadeInText(shared_ptr<GraphicsContext> ctx, string content, Font font, SDL_Color color, int layout_width, double time)
+    : ctx(ctx)
+    , content(content)
+    , font(font)
+    , color(color)
+    , layout_width(layout_width)
     , total_time(time) {}
 
-void FadeInAnimation::progress(double dt) {
+void FadeInText::progress(double dt) {
     current_time += dt;
     current_time = current_time > total_time  ? total_time : current_time;
 }
 
-void FadeInAnimation::render(SDL_Renderer *renderer, SDL_Rect target) {
-    auto [w, h] = get_size();
+SDL_Texture *FadeInText::get_current_texture() {
+    int width = ctx->width_from_layout_width(layout_width);
 
-    if(current_time >= total_time) {
-	SDL_RenderCopy(renderer, texture, NULL, &target);
+    if(last_width != width) {
+	SDL_DestroyTexture(current_texture);
+	Text text = Text(ctx->renderer, content, ctx->assets.fonts[font], color, width);
+	current_texture = text.get_texture();
     }
-}
 
-pair<int, int> FadeInAnimation::get_size() {
-    int width, height;
-    SDL_QueryTexture(texture, NULL, NULL, &width, &height);
-    return {width, height};
+    last_width = width;
 
+    int text_w, text_h;
+    SDL_QueryTexture(current_texture, NULL, NULL, &text_w, &text_h);
+
+    uint alpha = 255.0 * std::min(1.0, current_time / total_time);
+    SDL_SetTextureAlphaMod(current_texture, alpha);
+
+    return current_texture;
 }
 
 FlashingCursorAnimation::FlashingCursorAnimation(double time_vis, double time_invis)

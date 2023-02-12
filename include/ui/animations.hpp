@@ -4,6 +4,7 @@
 #include <SDL.h>
 #include <SDL_render.h>
 
+#include "ui/context.hpp"
 #include "ui/text.hpp"
 
 class Animation {
@@ -36,20 +37,28 @@ private:
     double current_time = 0;
 };
 
-class FadeInAnimation: public Animation {
+class FadeInText: public Animation {
+private:
+    SDL_Texture *current_texture;
 public:
-    FadeInAnimation(SDL_Texture *texture, double time);
+    FadeInText(shared_ptr<GraphicsContext> ctx, string content, Font font, SDL_Color color, int layout_width, double time);
 
     bool is_finished();
-    void render(SDL_Renderer *renderer, SDL_Rect target);
+    SDL_Texture *get_current_texture();
     pair<int, int> get_size();
 private:
     void progress(double dt);
 private:
-    SDL_Texture *texture;
+    string content;
+    Font font;
+    SDL_Color color;
+    int layout_width;
 
+    int last_width;
     double total_time;
     double current_time = 0;
+
+    shared_ptr<GraphicsContext> ctx;
 };
 
 class FlashingCursorAnimation: public Animation {
@@ -68,4 +77,4 @@ private:
     double time_mod = 0;
 };
 
- #endif // _UI_ANIMATIONS_
+#endif // _UI_ANIMATIONS_
