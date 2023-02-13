@@ -19,8 +19,8 @@
  * =====================================================================================
  */
 
-#include "game/state.hpp"
-#include "ui/ui.hpp"
+#include "state.hpp"
+#include "../ui/ui.hpp"
 
 class Game
 {
@@ -35,9 +35,11 @@ private:
 	
 	bool ExecuteBase(std::string command);
 	std::string ExecuteTent(std::string command);
-        std::string ExecuteDigsite(Story story, std::string command);
+    std::string ExecuteDigsite(Story story, std::string command);
 
-        bool InventoryContains(string name);
+	void ChangeScene(Scene scene);
+
+    bool InventoryContains(string name);
 
 };
 
