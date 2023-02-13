@@ -9,7 +9,9 @@ using std::string;
 using std::vector;
 
 const map<string, string> SYNONYMS = {
-    {"pick up", "take"}
+    {"pick up", "take"},
+    {"to", ""},
+    {"with", ""},
 };
 
 const set<char> WHITESPACE{' '};

@@ -39,7 +39,10 @@ void Game::ExecuteTent(std::string command)
 
 }
 
-std::string Game::Execute(std::string command)
+void Game::ExecuteDigsite(Story story, std::string command) {
+}
+
+std::string Game::Execute(Story story, std::string command)
 {
 	if(!ExecuteBase(command)) return baseResponse;
 
@@ -49,7 +52,7 @@ std::string Game::Execute(std::string command)
 			return ExecuteTent(command);
 			break;
 		case(Scene::DIGSITE):
-			return ExecuteDigSite(command);
+		        return ExecuteDigsite(story, command);
 			break;
 		default:
 			return "where the hell are you?";
