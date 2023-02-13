@@ -22,12 +22,8 @@ UI::UI(shared_ptr<GraphicsContext> ctx)
     , computer(UIComputer(ctx))
     , diary(UIDiary(ctx))
 {
-    inventory.add_item(Item::PICKAXE);
-    inventory.add_item(Item::SHOVEL);
-    inventory.add_item(Item::CHISEL);
-
-    ctx->play_sound(Sound::DIARY_SCRIBBLE);
-    ctx->play_sound(Sound::DIARY_SLIDE);
+    //ctx->play_sound(Sound::DIARY_SCRIBBLE);
+    // ctx->play_sound(Sound::DIARY_SLIDE);
 
     SDL_StartTextInput();
 
@@ -107,7 +103,7 @@ void UI::write(Story story, string text) {
 
 void UI::write(Story story, string text, double appear_time) {
     Font font = story == Story::DIARY ? Font::PAST_WRITING : Font::PRESENT_NARRATION;
-    write(story, text, font, 0.0);
+    write(story, text, font, appear_time);
 }
 
 void UI::write(Story story, string text, Font font) {

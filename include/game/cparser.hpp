@@ -13,12 +13,14 @@ const map<string, string> SYNONYMS = {
     {"look around", "look"},
     {"scout", "look"},
     {"talk to", "talk"},
-    {"the", ""},
-    {"to", ""},
-    {"with", ""},
+    {"fuck off", "go"},
+    {"fucking ", ""},
+    {"the ", ""},
+    {"to ", ""},
+    {"with ", ""},
 };
 
-const set<char> WHITESPACE{' '};
+const set<char> WHITESPACE{' ', '\t'};
 
 void replace_all(std::string& s, std::string const& toReplace, std::string const& replaceWith);
 string prettify_command(string input);

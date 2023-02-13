@@ -65,6 +65,7 @@ struct State
     
         BlakeState blake_state = BlakeState::UNSPOKEN_TO;
         MoundMaterial mound_material = MoundMaterial::DIRT;
+        bool has_been_to_digsite;
 };
 
 

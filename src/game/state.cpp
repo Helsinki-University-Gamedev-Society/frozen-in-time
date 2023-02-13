@@ -23,5 +23,8 @@
 
 std::string Inventory::List()
 {
+    if(contents.empty()) {
+	return "You are not carrying anything right now!";
+    }
     return std::accumulate(contents.cbegin(), contents.cend(), std::string(""), [](string acc, InvItem second){ return acc + ", " + second.name;});
 }
