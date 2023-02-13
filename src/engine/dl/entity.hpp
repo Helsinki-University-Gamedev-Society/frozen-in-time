@@ -24,7 +24,7 @@
 #include <vector>
 #include <map>
 
-#include "../sparser/sparser.hpp"
+#include "../utils/parser/parser.hpp"
 
 namespace Entity
 {
@@ -45,13 +45,15 @@ namespace Entity
 		std::string label;
 		T value;
 	
+		Entity() = default;
+
 		Entity(std::string from)
 		{
 			static_assert(std::is_convertible<T*, Parser::Serialisable*>::value, "value must implement Parser::Serialisable interface");
 			Deserialise(from);
 		}
 	
-		std::string Serialise();
+		std::string Serialise() const;
 		std::string Deserialise(std::string from);
 	};
 	
@@ -79,7 +81,7 @@ namespace Entity
 		public:
 		std::string command;
 		
-		std::string Serialise();
+		std::string Serialise() const;
 		std::string Deserialise(std::string from);
 	};
 	
@@ -114,8 +116,13 @@ namespace Entity
 	class Scene : Parser::Serialisable
 	{
 		public:
+		std::string filename;
+		Data data;
 		Inventory items;
 		std::map<Entity<Command>, Entity<Action>> mapCommandToAction;
+
+		std::string Serialise() const;
+		std::string Deserialise(std::string from);
 	};
 
 	class UGL

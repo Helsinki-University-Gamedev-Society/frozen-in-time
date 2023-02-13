@@ -17,22 +17,13 @@
  */
 
 #include <string>
+#include "../dl/dl.hpp"
 
-namespace Parser
+class Sparser
 {
-	std::string parseTo(std::string from, std::string& to, std::string delim = ":");
-
-	class Serialisable
-	{
-		public:
-		virtual std::string Serialise();
-		virtual std::string Deserialise(std::string from);
-		// returns leftover string to allow for chained deserialisation
-	};
-
-	class Sparser // totally unnecessary
-	{
-
-	};
-}
+	public:
+	bool Load(Parser::Serialisable* sc, std::string filename);
+	void Write(Parser::Serialisable* sc, std::string filename);
+	void SaveState(std::string currentSceneLabel, Parser::Serialisable *inventory, std::string filename);
+};
 

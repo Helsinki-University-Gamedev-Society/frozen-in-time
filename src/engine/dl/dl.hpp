@@ -1,3 +1,6 @@
+#ifndef DL_HPP
+#define DL_HPP
+
 /*
  * =====================================================================================
  *
@@ -20,18 +23,32 @@
 #include <string>
 
 #include "entity.hpp"
-using namespace Entity;
 
 struct DataLayer : Parser::Serialisable
 {
+	private:
+	const std::string delim {"\n----\n"};
+	const std::array<Parser::Serialisable*, 5> entities;
+
+	public:
 	// static section
-	UGL* ugl;
-	Scene* globalScene;
+	Entity::Entity<Entity::UGL> ugl;
+	Entity::Entity<Entity::Scene> globalScene;
 
 	// stateful section
-	Inventory inventory;
+	Entity::Entity<Entity::Inventory> inventory;
 
 	// dynamic section
-	Scene* currentScene;
-	Scene* bufferScene;
+	Entity::Entity<Entity::Scene> currentScene;
+	Entity::Entity<Entity::Scene> bufferScene;
+
+	DataLayer() noexcept;
+
+	std::string Serialise();
+	std::string Deserialise(std::string from);
+
+	//template <typename T>
+	//Entity::Entity<T>& operator[](std::string label);
 };
+
+#endif /* DL_HPP */

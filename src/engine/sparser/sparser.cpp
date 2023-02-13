@@ -16,13 +16,29 @@
  * =====================================================================================
  */
 
+#include "../utils/file_access/file_access.hpp"
+#include "../utils/parser/parser.hpp"
 #include "sparser.hpp"
 
-std::string Parser::parseTo(std::string from, std::string& to, std::string delim)
+bool Sparser::Load(Parser::Serialisable* sc, std::string filename)
 {
-	std::size_t pos = from.find(delim);
-	to.assign(from.substr(0,pos));
+	try
+	{
+		sc->Deserialise(File::Read(filename));	
+		return true;
+	}
+	catch(std::exception ex)
+	{
+		return false;
+	}
+}
 
-	return from.substr(pos+1);
-};
+void Sparser::Write(Parser::Serialisable* sc, std::string filename)
+{
+	File::Write(sc->Serialise(), filename);
+}
 
+void Sparser::SaveState(std::string currentSceneLabel, Parser::Serialisable *inventory, std::string filename)
+{
+	File::Write(currentSceneLabel + "\n--\n" + inventory->Serialise(), filename);
+}
