@@ -19,3 +19,5 @@ const SDL_Rect LAYOUT_MAP{264, 108, 96, 96};
 
 
 const int MAX_ITEMS_IN_ROW = 5;
+
+const int LOG_MESSAGE_SPACING = 20;

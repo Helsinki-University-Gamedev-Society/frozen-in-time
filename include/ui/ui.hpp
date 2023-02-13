@@ -28,7 +28,10 @@ using std::string;
 #define WINDOW_WIDTH 1920
 #define WINDOW_HEIGHT 1080
 
-#define MESSAGE_SPACING 20
+enum class Story {
+    COMPUTER,
+    DIARY
+};
 
 enum class UIEvent_Type {
     EXIT,
@@ -37,7 +40,7 @@ enum class UIEvent_Type {
 
 struct UIEvent_EXIT {};
 struct UIEvent_SEND_COMMAND {
-    bool diary;
+    Story story;
     string command;
 };
 
@@ -50,22 +53,27 @@ bool UIEvent_of_type(UIEvent &event) {
 
 class UI {
 private:
-    bool diary_on_screen = true;
-    double fps = 60;
+    Story current_story;
+    double fps = 120;
 public:
     UI(shared_ptr<GraphicsContext> ctx);
     ~UI();
 
     void update();
     bool poll(UIEvent *event);
+
+    void write(Story story, string text);
+    void play_sound(string name);
+    void set_map_image(string name);
+
     void render();
-public: // Child elements
+private:
+    void render_background();
+private: // Child elements
     UIInventory inventory;
+    UIMap map;
     UIComputer computer;
     UIDiary diary;
-private: // Private SDL2-related functions
-    void render_background();
-    void render_map();
 private:
     double time_since_last_render = 0;
     queue<UIEvent> events;

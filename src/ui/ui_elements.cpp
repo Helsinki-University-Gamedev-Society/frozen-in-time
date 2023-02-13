@@ -60,7 +60,7 @@ void UIInventory::render() {
 	    top_left_x += rem_hori_padding / 2;
 
 	    SDL_Rect target_rect = {top_left_x, top_left_y, item_size, item_size};
-	    SDL_RenderCopy(ctx->renderer, ctx->assets.textures[ITEM_TO_TEXTURE.at(item)], NULL, &target_rect);
+	    SDL_RenderCopy(ctx->renderer, ctx->assets.get_texture(ITEM_TO_TEXTURE.at(item)), NULL, &target_rect);
 
 	    top_left_x += item_size;
 	    top_left_x += rem_hori_padding / 2;
@@ -68,6 +68,21 @@ void UIInventory::render() {
 	top_left_y += item_size;
 	top_left_y += rem_vert_padding / 2;
     }
+}
+
+UIMap::UIMap(shared_ptr<GraphicsContext> ctx)
+    : ctx(ctx)
+    , texture_name(TEXTURE_TO_NAME.at(Texture::MAP)) {}
+
+void UIMap::render() {
+    SDL_Rect viewport = ctx->viewport_from_layout(LAYOUT_MAP);
+    SDL_RenderSetViewport(ctx->renderer, &viewport);
+
+    SDL_RenderCopy(ctx->renderer, ctx->assets.get_texture(texture_name), NULL, NULL);
+}
+
+void UIMap::set_texture(string name) {
+    texture_name = name;
 }
 
 UIMessageLog::UIMessageLog(shared_ptr<GraphicsContext> ctx, Font font, SDL_Color color, pair<int, int> dims)
@@ -87,7 +102,8 @@ void UIMessageLog::render(SDL_Point top_left) {
     double scale = ((double) viewport.w) / ((double) dims.second);
 
     int bottom_right_height = viewport.h;
-    for(auto it = messages.rbegin(); it != messages.rend(); ++it) {
+    auto it = messages.rbegin();
+	while(it != messages.rend()) {
 	it->update();
 
 	SDL_Texture *text_texture = it->get_current_texture();
@@ -98,12 +114,17 @@ void UIMessageLog::render(SDL_Point top_left) {
 	SDL_RenderCopy(ctx->renderer, text_texture, NULL, &text_target);
 
 	bottom_right_height -= text_h;
-	bottom_right_height -= MESSAGE_SPACING;
+	bottom_right_height -= LOG_MESSAGE_SPACING;
+
+	++it;
 
 	if(bottom_right_height < 0) {
+	    // Remove messages that are too far up
+	    messages.erase(messages.begin(), it.base());
 	    break;
 	}
     }
+    
 }
 
 void UIMessageLog::add_message(string message) {
@@ -118,7 +139,7 @@ UIInputField::UIInputField(shared_ptr<GraphicsContext> ctx, Font font, SDL_Color
     , font(font)
     , color(color)
     , content("")
-    , text(Text(ctx->renderer, "", ctx->assets.fonts[font], color, dims.first))
+    , text(Text(ctx->renderer, "", ctx->assets.get_font(font), color, dims.first))
     , dims(dims)
     , cursor_visible(FlashingCursorAnimation(0.5, 0.5)) {
     cursor_visible.start();
@@ -132,7 +153,7 @@ void UIInputField::render(SDL_Point top_left) {
 	    dims.first, dims.second,
 	});
 
-    text = Text(ctx->renderer, content + (cursor_visible.is_visible() ? "|" : ""), ctx->assets.fonts[font], color, viewport.w);
+    text = Text(ctx->renderer, content + (cursor_visible.is_visible() ? "|" : ""), ctx->assets.get_font(font), color, viewport.w);
     auto [text_w, text_h] = text.get_size();
 
     // We scale the text to fill up the viewport 
@@ -167,10 +188,7 @@ UIDiary::UIDiary(shared_ptr<GraphicsContext> ctx)
     , position(EaseOutExpoAnimation(LAYOUT_DIARY_HIDDEN_TOP_LEFT,
 				    LAYOUT_DIARY_REVEALED_TOP_LEFT,
 				    1.0))
-    , revealed(true)
-{
-    position.start();
-}
+    , revealed(false) {}
 
 void UIDiary::set_revealed(bool reveal) {
     if(reveal == revealed) {
@@ -194,7 +212,7 @@ void UIDiary::render() {
     SDL_Rect viewport = ctx->viewport_from_layout({pos.x, pos.y, LAYOUT_DIARY_DIMS.first, LAYOUT_DIARY_DIMS.second});
 
     SDL_RenderSetViewport(ctx->renderer, &viewport);
-    SDL_RenderCopy(ctx->renderer, ctx->assets.textures[Texture::DIARY], NULL, NULL);
+    SDL_RenderCopy(ctx->renderer, ctx->assets.get_texture(Texture::DIARY), NULL, NULL);
 
     log.render(SDL_Point{
 	    pos.x + LAYOUT_DIARY_LOG_RELATIVE.x,

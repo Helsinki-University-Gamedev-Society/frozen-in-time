@@ -30,11 +30,14 @@ bool Animation::has_started() {
 EaseOutExpoAnimation::EaseOutExpoAnimation(SDL_Point from, SDL_Point to, double time)
     : from(from)
     , to(to)
-    , total_time(time) {}
+    , total_time(time)
+    , current_state(from) {}
 
 void EaseOutExpoAnimation::progress(double dt) {
+    if(current_time > total_time) {
+	return;
+    }
     current_time += dt;
-    current_time = current_time > total_time ? total_time : current_time;
 
     double p_t = current_time / total_time;
     double p_d = p_t >= 0.75 ? 1 : 1 - pow(2, -10 * p_t);
@@ -56,8 +59,10 @@ FadeInText::FadeInText(shared_ptr<GraphicsContext> ctx, string content, Font fon
     , total_time(time) {}
 
 void FadeInText::progress(double dt) {
+    if(current_time > total_time) {
+	return;
+    }
     current_time += dt;
-    current_time = current_time > total_time  ? total_time : current_time;
 }
 
 SDL_Texture *FadeInText::get_current_texture() {
@@ -65,7 +70,7 @@ SDL_Texture *FadeInText::get_current_texture() {
 
     if(last_width != width) {
 	SDL_DestroyTexture(current_texture);
-	Text text = Text(ctx->renderer, content, ctx->assets.fonts[font], color, width);
+	Text text = Text(ctx->renderer, content, ctx->assets.get_font(font), color, width);
 	current_texture = text.get_texture();
     }
 

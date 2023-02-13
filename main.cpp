@@ -1,9 +1,11 @@
 #include <iostream>
 
+#include <SDL_filesystem.h>
 #include <SDL_ttf.h>
 
 #include "ui/ui.hpp"
 #include "ui/ui_elements.hpp"
+#include "utils/file_access.hpp"
 
 int main(int argc, char *argv[])
 {
@@ -22,17 +24,14 @@ int main(int argc, char *argv[])
 		quit = true;
 	    } else if(UIEvent_of_type<UIEvent_SEND_COMMAND>(event)) {
 		UIEvent_SEND_COMMAND command_event = std::get<UIEvent_SEND_COMMAND>(event);
-		if(command_event.diary) {
-		    std::cout << "Received diary input: " << command_event.command << std::endl;
-		} else {
-		    std::cout << "Received non-diary input: " << command_event.command << std::endl;
+		if(command_event.command == "eat banana") {
+		    ui.write(command_event.story, "Nom nom nom! What a great banana that was!!!");
+		    ui.set_map_image("world_map.png");
 		}
 	    }
 	}
 
 	ui.render(); // Render UI
-
-	SDL_Delay(10);
     }
 
 

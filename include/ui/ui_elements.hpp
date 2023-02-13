@@ -1,6 +1,7 @@
 #ifndef _UI_ELEMENTS_
 #define _UI_ELEMENTS_
 
+#include <deque>
 #include <memory>
 #include <optional>
 #include <vector>
@@ -13,6 +14,7 @@
 #include "ui/layout.hpp"
 #include "ui/text.hpp"
 
+using std::deque;
 using std::shared_ptr;
 using std::vector;
 
@@ -30,8 +32,14 @@ private:
 
 class UIMap {
 public:
-    UIMap();
-    void render(SDL_Rect viewport);
+    UIMap(shared_ptr<GraphicsContext> ctx);
+    void render();
+
+    void set_texture(string name);
+private:
+    string texture_name;
+
+    shared_ptr<GraphicsContext> ctx;
 };
 
 class UIMessageLog {
@@ -45,7 +53,7 @@ private:
     SDL_Color color;
     pair<int, int> dims;
 
-    vector<FadeInText> messages;
+    deque<FadeInText> messages;
     shared_ptr<GraphicsContext> ctx;
 };
 

@@ -20,8 +20,12 @@ GraphicsContext::GraphicsContext()
     , renderer(SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED))
     , assets(AssetManager(renderer)) {}
 
+void GraphicsContext::play_sound(string sound) {
+    Mix_PlayChannel(-1, assets.get_sound(sound), 0);
+}
+
 void GraphicsContext::play_sound(Sound sound) {
-    Mix_PlayChannel(-1, assets.sounds[sound], 0);
+    Mix_PlayChannel(-1, assets.get_sound(sound), 0);
 }
 
 shared_ptr<GraphicsContext> init_graphics() {
@@ -77,6 +81,7 @@ int GraphicsContext::width_from_layout_width(int layout_width) {
 UI::UI(shared_ptr<GraphicsContext> ctx)
     : ctx(ctx)
     , inventory(UIInventory(ctx))
+    , map(UIMap(ctx))
     , computer(UIComputer(ctx))
     , diary(UIDiary(ctx))
 {
@@ -105,17 +110,17 @@ void UI::update() {
 	}
 	if(e.type == SDL_KEYDOWN) {
 	    if(e.key.keysym.sym == SDLK_TAB) {
-		diary_on_screen = not diary_on_screen;
-		diary.set_revealed(diary_on_screen);
+		current_story = current_story == Story::DIARY ? Story::COMPUTER : Story::DIARY;
+		diary.set_revealed(current_story == Story::DIARY);
 	    } else if(e.key.keysym.sym == SDLK_BACKSPACE) {
-		if(diary_on_screen) {
+		if(current_story == Story::DIARY) {
 		    diary.input.remove_character();
 		} else {
 		    computer.input.remove_character();
 		}
 	    } else if(e.key.keysym.sym == SDLK_RETURN) {
 		string content;
-		if(diary_on_screen) {
+		if(current_story == Story::DIARY) {
 		    if(diary.input.get_content().empty()) {
 			return;
 		    }
@@ -123,8 +128,6 @@ void UI::update() {
 
 		    diary.log.add_message("> " + content);
 		    diary.input.clear();
-
-		    ctx->play_sound(Sound::DIARY_SCRIBBLE);
 		} else {
 		    if(computer.input.get_content().empty()) {
 			return;
@@ -133,13 +136,12 @@ void UI::update() {
 
 		    computer.log.add_message("> " + content);
 		    computer.input.clear();
-		    // ctx->play_sound(Sound::DIARY_SCRIBBLE);
 		}
-		events.push(UIEvent_SEND_COMMAND{diary_on_screen, content});
+		events.push(UIEvent_SEND_COMMAND{current_story, content});
 
 	    }
 	} else if(e.type == SDL_TEXTINPUT) {
-	    if(diary_on_screen) {
+	    if(current_story == Story::DIARY) {
 		diary.input.add_string(e.text.text);
 	    } else {
 		computer.input.add_string(e.text.text);
@@ -159,19 +161,28 @@ bool UI::poll(UIEvent *event) {
     return true;
 }
 
+void UI::write(Story story, string text) {
+    if(story == Story::DIARY) {
+	ctx->play_sound(Sound::DIARY_SCRIBBLE);
+	diary.log.add_message(text);
+    } else {
+	computer.log.add_message(text);
+    }
+}
+
+void UI::play_sound(string name) {
+    ctx->play_sound(name);
+}
+
+void UI::set_map_image(string name) {
+    map.set_texture(name);
+}
+
 void UI::render_background() {
-    // SDL_Rect full_viewport {0, 0, WINDOW_WIDTH, WINDOW_HEIGHT};
     SDL_Rect viewport = ctx->viewport_from_layout(LAYOUT_BACKGROUND);
 
     SDL_RenderSetViewport(ctx->renderer, &viewport);
-    SDL_RenderCopy(ctx->renderer, ctx->assets.textures[Texture::BACKGROUND], NULL, NULL);
-}
-
-void UI::render_map() {
-    SDL_Rect viewport = ctx->viewport_from_layout(LAYOUT_MAP);
-
-    SDL_RenderSetViewport(ctx->renderer, &viewport);
-    SDL_RenderCopy(ctx->renderer, ctx->assets.textures[Texture::MAP], NULL, NULL);
+    SDL_RenderCopy(ctx->renderer, ctx->assets.get_texture(Texture::BACKGROUND), NULL, NULL);
 }
 
 void UI::render() {
@@ -181,24 +192,21 @@ void UI::render() {
 
     // Do stuff
     render_background();
-    render_map();
 
     computer.render();
     diary.render();
+    map.render();
     inventory.render();
 
     // Present
     SDL_RenderPresent(ctx->renderer);
 
     // Delay to match the framerate
-
     int time_now = SDL_GetPerformanceCounter();
     double time_taken = (double) (time_now - time_since_last_render) / ((double) SDL_GetPerformanceFrequency());
     time_taken = time_taken < 0 ? 0 : time_taken; // Sometimes this is zero
 
-    std::cout << "SPF: " << 1/fps << ", time taken: " << time_taken << ", " << std::max(0.0, (1/fps - time_taken) * 1000) << std::endl;
-
     SDL_Delay(std::max(0.0, (1/fps - time_taken) * 1000));
 
-    time_since_last_render = time_now;
+    time_since_last_render = SDL_GetPerformanceCounter();
 }

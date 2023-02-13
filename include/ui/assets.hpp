@@ -3,12 +3,17 @@
 
 #include <map>
 #include <string>
+#include <utility>
 
 #include <SDL_image.h>
 #include <SDL_mixer.h>
+#include <SDL_render.h>
 #include <SDL_ttf.h>
 
+#include "utils/file_access.hpp"
+
 using std::map;
+using std::pair;
 using std::string;
 
 enum class Item {
@@ -38,7 +43,7 @@ enum class Font {
     DIARY_FONT = 1,
 };
 
-const map<Texture, string> TEXTURE_TO_FILE = {
+const map<Texture, string> TEXTURE_TO_NAME = {
     // {Texture::BACKGROUND, "dark-wood-background.jpg"},
     {Texture::BACKGROUND, "background.png"},
     // {Texture::MAP,        "diary-background.jpg"},
@@ -51,12 +56,12 @@ const map<Texture, string> TEXTURE_TO_FILE = {
     {Texture::CHISEL,     "item_chisel.png"},
 };
 
-const map<Sound, string> SOUND_TO_FILE = {
+const map<Sound, string> SOUND_TO_NAME = {
     {Sound::DIARY_SLIDE, "diary-sliding.wav"},
     {Sound::DIARY_SCRIBBLE, "diary-scribble.wav"},
 };
 
-const map<Font, string> FONT_TO_FILE = {
+const map<Font, string> FONT_TO_NAME = {
     {Font::COMPUTER_FONT, "pixelfjverdana.regular.ttf"},
     {Font::DIARY_FONT, "dpcomic.regular.ttf"},
 };
@@ -77,13 +82,24 @@ class AssetManager {
 public:
     AssetManager(SDL_Renderer *renderer);
     ~AssetManager();
-public:
-    map<Texture, SDL_Texture *> textures;
-    map<Sound, Mix_Chunk *> sounds;
-    map<Font, TTF_Font *> fonts;
+
+    SDL_Texture *get_texture(string name);
+    SDL_Texture *get_texture(Texture texture);
+
+    Mix_Chunk *get_sound(string name);
+    Mix_Chunk *get_sound(Sound sound);
+
+    TTF_Font *get_font(string name, int size);
+    TTF_Font *get_font(Font font);
 private:
-    void load_assets(SDL_Renderer *renderer);
     void unload_assets();
+private:
+    map<string, SDL_Texture *> textures;
+    map<string, Mix_Chunk *> sounds;
+    map<pair<string, int>, TTF_Font *> fonts;
+
+    SDL_Renderer *renderer;
+    FileAccessor accessor;
 };
 
 #endif // _UI_ASSETS_

@@ -10,6 +10,7 @@ class GraphicsContext {
 public:
     GraphicsContext();
 
+    void play_sound(string sound);
     void play_sound(Sound sound);
     SDL_Rect viewport_from_layout(SDL_Rect layout);
     int width_from_layout_width(int layout_width);
