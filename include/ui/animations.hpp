@@ -41,7 +41,7 @@ class FadeInText: public Animation {
 private:
     SDL_Texture *current_texture;
 public:
-    FadeInText(shared_ptr<GraphicsContext> ctx, string content, Font font, int layout_width, double time);
+    FadeInText(shared_ptr<GraphicsContext> ctx, string content, Font font, int layout_width, double appear_time, double fade_time);
 
     bool is_finished();
     SDL_Texture *get_current_texture();
@@ -54,7 +54,8 @@ private:
     int layout_width;
 
     int last_width;
-    double total_time;
+    double appear_time;
+    double fade_time;
     double current_time = 0;
 
     shared_ptr<GraphicsContext> ctx;

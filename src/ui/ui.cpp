@@ -65,7 +65,7 @@ void UI::update() {
 		    }
 		    content = diary.input.get_content();
 
-		    diary.log.add_message("> " + content, Font::PAST_WRITING);
+		    diary.log.add_message("> " + content, Font::PAST_WRITING, 0.0);
 		    diary.input.clear();
 		} else {
 		    if(computer.input.get_content().empty()) {
@@ -73,7 +73,7 @@ void UI::update() {
 		    }
 		    content = computer.input.get_content();
 
-		    computer.log.add_message("> " + content, Font::PRESENT_PLAYER_SPEAKING);
+		    computer.log.add_message("> " + content, Font::PRESENT_PLAYER_SPEAKING, 0.0);
 		    computer.input.clear();
 		}
 		events.push(UIEvent_SEND_COMMAND{current_story, content});
@@ -102,15 +102,24 @@ bool UI::poll(UIEvent *event) {
 
 void UI::write(Story story, string text) {
     Font font = story == Story::DIARY ? Font::PAST_WRITING : Font::PRESENT_NARRATION;
-	write(story, text, font);
+    write(story, text, font);
+}
+
+void UI::write(Story story, string text, double appear_time) {
+    Font font = story == Story::DIARY ? Font::PAST_WRITING : Font::PRESENT_NARRATION;
+    write(story, text, font, 0.0);
 }
 
 void UI::write(Story story, string text, Font font) {
+    write(story, text, font, 0.0);
+}
+
+void UI::write(Story story, string text, Font font, double appear_time) {
     if(story == Story::DIARY) {
 	ctx->play_sound(Sound::DIARY_SCRIBBLE);
-	diary.log.add_message(text, font);
+	diary.log.add_message(text, font, appear_time);
     } else {
-	computer.log.add_message(text, font);
+	computer.log.add_message(text, font, appear_time);
     }
 }
 

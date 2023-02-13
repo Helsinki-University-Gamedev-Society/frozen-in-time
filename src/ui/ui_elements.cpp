@@ -123,6 +123,10 @@ void UIMessageLog::render(SDL_Point top_left) {
 	it->update();
 
 	SDL_Texture *text_texture = it->get_current_texture();
+	if(text_texture == NULL) {
+	    ++it;
+	    continue;
+	}
 	int text_w, text_h;
 	SDL_QueryTexture(text_texture, NULL, NULL, &text_w, &text_h);
 
@@ -143,8 +147,8 @@ void UIMessageLog::render(SDL_Point top_left) {
     
 }
 
-void UIMessageLog::add_message(string message, Font font) {
-    auto animation = FadeInText(ctx, message, font, dims.first, 1.0);
+void UIMessageLog::add_message(string message, Font font, double appear_time) {
+    auto animation = FadeInText(ctx, message, font, dims.first, appear_time, 1.0);
     animation.start();
 
     messages.push_back(animation);

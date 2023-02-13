@@ -51,7 +51,7 @@ public:
     UIMessageLog(shared_ptr<GraphicsContext> ctx, pair<int, int> dims);
     void render(SDL_Point top_left);
 
-    void add_message(string message, Font font);
+    void add_message(string message, Font font, double appear_time);
 private:
     Font font;
     SDL_Color color;

@@ -51,15 +51,16 @@ bool EaseOutExpoAnimation::is_finished() {
     return current_time >= total_time;
 }
 
-FadeInText::FadeInText(shared_ptr<GraphicsContext> ctx, string content, Font font, int layout_width, double time)
+FadeInText::FadeInText(shared_ptr<GraphicsContext> ctx, string content, Font font, int layout_width, double appear_time, double fade_time)
     : ctx(ctx)
     , content(content)
     , font(font)
     , layout_width(layout_width)
-    , total_time(time) {}
+    , appear_time(appear_time)
+    , fade_time(fade_time) {}
 
 void FadeInText::progress(double dt) {
-    if(current_time > total_time) {
+    if(current_time > appear_time + fade_time) {
 	return;
     }
     current_time += dt;
@@ -67,6 +68,10 @@ void FadeInText::progress(double dt) {
 
 SDL_Texture *FadeInText::get_current_texture() {
     int width = ctx->width_from_layout_width(layout_width);
+
+    if(current_time < appear_time) {
+	return NULL;
+    }
 
     if(last_width != width) {
 	SDL_DestroyTexture(current_texture);
@@ -83,7 +88,7 @@ SDL_Texture *FadeInText::get_current_texture() {
     int text_w, text_h;
     SDL_QueryTexture(current_texture, NULL, NULL, &text_w, &text_h);
 
-    uint alpha = 255.0 * std::min(1.0, current_time / total_time);
+    uint alpha = 255.0 * std::min(1.0, (current_time - appear_time) / fade_time);
     SDL_SetTextureAlphaMod(current_texture, alpha);
 
     return current_texture;

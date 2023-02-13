@@ -63,7 +63,9 @@ public:
     bool poll(UIEvent *event);
 
     void write(Story story, string text);
+    void write(Story story, string text, double appear_time);
     void write(Story story, string text, Font font);
+    void write(Story story, string text, Font font, double appear_time);
 
     void play_sound(string name);
     void play_music(string name);

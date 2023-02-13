@@ -54,11 +54,11 @@ void Game::ExecuteDigsite(std::string command) {
     if(cmd == "talk blake") {
 	switch(state.blake_state) {
 	    case BlakeState::UNSPOKEN_TO: {
-		ui->write(Story::COMPUTER, "Blake: \"Oh hi C., back to work huh?\"", Font::PRESENT_OTHER_CHARACTER);
-		ui->write(Story::COMPUTER, "\"Yeah, no rest for the wicked.\"", Font::PRESENT_PLAYER_SPEAKING);
-		ui->write(Story::COMPUTER, "Blake: \"Tell me about it... You really think there's something in that mound? There are so many mounds just like that all over the island. What makes you think that one's anything special?\"", Font::PRESENT_OTHER_CHARACTER);
-		ui->write(Story::COMPUTER, "\"Call it a hunch. I just have a feeling there's something there. And I never go against my instincts.\"", Font::PRESENT_PLAYER_SPEAKING);
-		ui->write(Story::COMPUTER, "Blake: \"Well, you do you, C.\"", Font::PRESENT_OTHER_CHARACTER);
+		ui->write(Story::COMPUTER, "Blake: \"Oh hi C., back to work huh?\"", Font::PRESENT_OTHER_CHARACTER, 0.0);
+		ui->write(Story::COMPUTER, "\"Yeah, no rest for the wicked.\"", Font::PRESENT_PLAYER_SPEAKING, 2.0);
+		ui->write(Story::COMPUTER, "Blake: \"Tell me about it... You really think there's something in that mound? There are so many mounds just like that all over the island. What makes you think that one's anything special?\"", Font::PRESENT_OTHER_CHARACTER, 3.0);
+		ui->write(Story::COMPUTER, "\"Call it a hunch. I just have a feeling there's something there. And I never go against my instincts.\"", Font::PRESENT_PLAYER_SPEAKING, 10.0);
+		ui->write(Story::COMPUTER, "Blake: \"Well, you do you, C.\"", Font::PRESENT_OTHER_CHARACTER, 12.0);
 		break;
 	    }
 	    case BlakeState::GO_TO_WORK: {
@@ -66,11 +66,11 @@ void Game::ExecuteDigsite(std::string command) {
 		break;
 	    }
 	    case BlakeState::JOURNAL_FOUND: {
-		ui->write(Story::COMPUTER, "\"I found these pages from a journal in the mound, what do you think?\"", Font::PRESENT_PLAYER_SPEAKING);
-		ui->write(Story::COMPUTER, "Blake: \"Huh, there really was something down there... Good job!\"", Font::PRESENT_OTHER_CHARACTER);
-		ui->write(Story::COMPUTER, "\"So, what do you think?\"", Font::PRESENT_PLAYER_SPEAKING);
-		ui->write(Story::COMPUTER, "Blake: \"What do I think? I think you should read it.\"", Font::PRESENT_OTHER_CHARACTER);
-		ui->write(Story::COMPUTER, "I should open the journal and read it.", Font::PRESENT_PLAYER_THINKING);
+		ui->write(Story::COMPUTER, "\"I found these pages from a journal in the mound, what do you think?\"", Font::PRESENT_PLAYER_SPEAKING, 3.0);
+		ui->write(Story::COMPUTER, "Blake: \"Huh, there really was something down there... Good job!\"", Font::PRESENT_OTHER_CHARACTER, 6.0);
+		ui->write(Story::COMPUTER, "\"So, what do you think?\"", Font::PRESENT_PLAYER_SPEAKING, 8.0);
+		ui->write(Story::COMPUTER, "Blake: \"What do I think? I think you should read it.\"", Font::PRESENT_OTHER_CHARACTER, 9.0);
+		ui->write(Story::COMPUTER, "I should open the journal and read it.", Font::PRESENT_PLAYER_THINKING, 11.0);
 		break;
 	    }
 	}
