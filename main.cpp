@@ -1,27 +1,44 @@
-#include "SDL.h"
+#include <iostream>
+
+#include <SDL_filesystem.h>
+#include <SDL_ttf.h>
+
+#include "ui/ui.hpp"
+#include "ui/ui_elements.hpp"
+#include "utils/file_access.hpp"
 
 int main(int argc, char *argv[])
 {
-  SDL_Init(SDL_INIT_VIDEO);
+    UI ui = init_UI();
 
-  SDL_Window *window = SDL_CreateWindow(
-    "SDL2Test",
-    SDL_WINDOWPOS_UNDEFINED,
-    SDL_WINDOWPOS_UNDEFINED,
-    640,
-    480,
-    0
-  );
+    bool quit = false;
 
-  SDL_Renderer *renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_SOFTWARE);
-  SDL_SetRenderDrawColor(renderer, 0, 0, 0, SDL_ALPHA_OPAQUE);
-  SDL_RenderClear(renderer);
-  SDL_RenderPresent(renderer);
+    ui.play_music("paulstretched-uncertainty.ogg");
 
-  SDL_Delay(3000);
+    while(not quit) {
+	ui.update(); // Update UI
 
-  SDL_DestroyWindow(window);
-  SDL_Quit();
+	UIEvent event;
+	while(ui.poll(&event)) { // Keep polling events until there are no more
+	    if(UIEvent_of_type<UIEvent_EXIT>(event)) {
+		quit = true;
+	    } else if(UIEvent_of_type<UIEvent_SEND_COMMAND>(event)) {
+		UIEvent_SEND_COMMAND command_event = std::get<UIEvent_SEND_COMMAND>(event);
+		if(command_event.command == "eat banana") {
+		    ui.add_inventory_item("item_pickaxe.png");
+		    ui.write(command_event.story, "Nom nom nom! What a great banana that was!!!");
+		    ui.set_map_image("world_map.png");
+		} else if(command_event.command == "uneat banana") {
+		    ui.remove_inventory_item("item_pickaxe.png");
+		    ui.write(command_event.story, "Blegh! Banana successfully regurgitated!");
+		    ui.set_map_image("world_map_present.png");
+		}
+	    }
+	}
 
-  return 0;
+	ui.render(); // Render UI
+    }
+
+
+    return 0;
 }
