@@ -9,7 +9,7 @@
 
 Text::Text(SDL_Renderer *renderer, string content, TTF_Font *font, SDL_Color color, int max_width) {
     content = content;
-    SDL_Surface *text_surface = TTF_RenderText_Solid_Wrapped(font, content.c_str(), color, max_width);
+    SDL_Surface *text_surface = TTF_RenderText_Blended_Wrapped(font, content.c_str(), color, max_width);
     texture = SDL_CreateTextureFromSurface(renderer, text_surface);
 
     int width, height;
