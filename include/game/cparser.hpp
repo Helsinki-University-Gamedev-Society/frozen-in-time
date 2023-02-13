@@ -12,6 +12,7 @@ const map<string, string> SYNONYMS = {
     {"look at", "inspect"},
     {"look around", "look"},
     {"scout", "look"},
+    {"talk to", "talk"},
     {"the", ""},
     {"to", ""},
     {"with", ""},

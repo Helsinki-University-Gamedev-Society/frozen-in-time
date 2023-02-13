@@ -56,18 +56,18 @@ void Game::ExecuteDigsite(std::string command) {
 	    case BlakeState::UNSPOKEN_TO: {
 		ui->write(Story::COMPUTER, "Blake: \"Oh hi C., back to work huh?\"", Font::PRESENT_OTHER_CHARACTER);
 		ui->write(Story::COMPUTER, "\"Yeah, no rest for the wicked.\"", Font::PRESENT_PLAYER_SPEAKING);
-		ui->write(Story::COMPUTER, "Blake: \"Tell me about it… You really think there’s something in that mound? There are so many mounds just like that all over the island. What makes you think that one’s anything special?\"", Font::PRESENT_OTHER_CHARACTER);
-		ui->write(Story::COMPUTER, "\"Call it a hunch. I just have a feeling there’s something there. And I never go against my instincts.\"", Font::PRESENT_PLAYER_SPEAKING);
+		ui->write(Story::COMPUTER, "Blake: \"Tell me about it... You really think there's something in that mound? There are so many mounds just like that all over the island. What makes you think that one's anything special?\"", Font::PRESENT_OTHER_CHARACTER);
+		ui->write(Story::COMPUTER, "\"Call it a hunch. I just have a feeling there's something there. And I never go against my instincts.\"", Font::PRESENT_PLAYER_SPEAKING);
 		ui->write(Story::COMPUTER, "Blake: \"Well, you do you, C.\"", Font::PRESENT_OTHER_CHARACTER);
 		break;
 	    }
 	    case BlakeState::GO_TO_WORK: {
-		ui->write(Story::COMPUTER, "Blake: \"Shouldn’t you be working? The tools should be out here somewhere.\"", Font::PRESENT_OTHER_CHARACTER);
+		ui->write(Story::COMPUTER, "Blake: \"Shouldn't you be working? The tools should be out here somewhere.\"", Font::PRESENT_OTHER_CHARACTER);
 		break;
 	    }
 	    case BlakeState::JOURNAL_FOUND: {
 		ui->write(Story::COMPUTER, "\"I found these pages from a journal in the mound, what do you think?\"", Font::PRESENT_PLAYER_SPEAKING);
-		ui->write(Story::COMPUTER, "Blake: \"Huh, there really was something down there… Good job!\"", Font::PRESENT_OTHER_CHARACTER);
+		ui->write(Story::COMPUTER, "Blake: \"Huh, there really was something down there... Good job!\"", Font::PRESENT_OTHER_CHARACTER);
 		ui->write(Story::COMPUTER, "\"So, what do you think?\"", Font::PRESENT_PLAYER_SPEAKING);
 		ui->write(Story::COMPUTER, "Blake: \"What do I think? I think you should read it.\"", Font::PRESENT_OTHER_CHARACTER);
 		ui->write(Story::COMPUTER, "I should open the journal and read it.", Font::PRESENT_PLAYER_THINKING);
@@ -118,7 +118,7 @@ void Game::ExecuteDigsite(std::string command) {
 	    state.mound_material = MoundMaterial::PERMAFROST;
 	    ui->write(Story::COMPUTER, "The rock has been removed, revealing some permafrost underneath.", Font::PRESENT_NARRATION);
 	} else {
-	    ui->write(Story::COMPUTER, "Hmm… No, that didn’t work. I should try something else.", Font::PRESENT_PLAYER_THINKING);
+	    ui->write(Story::COMPUTER, "Hmm... No, that didn't work. I should try something else.", Font::PRESENT_PLAYER_THINKING);
 	}
     } else if(cmd == "use shovel") {
 	if(state.mound_material == MoundMaterial::DIRT) {
@@ -126,7 +126,7 @@ void Game::ExecuteDigsite(std::string command) {
 	    state.mound_material = MoundMaterial::ROCK;
 	    ui->write(Story::COMPUTER, "The rock has been removed, revealing a rock underneath.", Font::PRESENT_NARRATION);
 	} else {
-	    ui->write(Story::COMPUTER, "Hmm… No, that didn’t work. I should try something else.", Font::PRESENT_PLAYER_THINKING);
+	    ui->write(Story::COMPUTER, "Hmm... No, that didn't work. I should try something else.", Font::PRESENT_PLAYER_THINKING);
 	}
     } else if(cmd == "use chisel") {
 	if(state.mound_material == MoundMaterial::PERMAFROST) {
@@ -134,10 +134,10 @@ void Game::ExecuteDigsite(std::string command) {
 	    state.mound_material = MoundMaterial::NONE;
 	    ui->write(Story::COMPUTER, "That's it! Now what do we have here?", Font::PRESENT_PLAYER_THINKING);
 	    ui->write(Story::COMPUTER, "At the bottom of the hole are some scraps of paper. As you carefully investigate them, you realise they are loose pages from some kind of a journal.", Font::PRESENT_NARRATION);
-	    ui->write(Story::COMPUTER, "This could be huge! I should probably open the journal to find out more. After all, if it isn’t anything interesting, or I want to do something else, I can always close the journal.", Font::PRESENT_PLAYER_THINKING);
+	    ui->write(Story::COMPUTER, "This could be huge! I should probably open the journal to find out more. After all, if it isn't anything interesting, or I want to do something else, I can always close the journal.", Font::PRESENT_PLAYER_THINKING);
 	    state.blake_state = BlakeState::JOURNAL_FOUND;
 	} else {
-	    ui->write(Story::COMPUTER, "Hmm… No, that didn’t work. I should try something else.", Font::PRESENT_PLAYER_THINKING);
+	    ui->write(Story::COMPUTER, "Hmm... No, that didn't work. I should try something else.", Font::PRESENT_PLAYER_THINKING);
 	}
     } else if(cmd == "look") {
 	ui->write(Story::COMPUTER,
@@ -151,6 +151,8 @@ void Game::ExecuteDigsite(std::string command) {
 void Game::Execute(Story story, std::string command)
 {
     // if(!ExecuteBase(command)) return baseResponse;
+    ExecuteDigsite(command);
+    return;
 
 	switch(state.scene)
 	{
