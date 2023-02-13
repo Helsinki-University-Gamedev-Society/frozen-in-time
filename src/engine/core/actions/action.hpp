@@ -17,7 +17,7 @@
  */
 
 #include <functional>
-#include "entity.hpp"
+#include "../../dl/entity.hpp"
 
 namespace Actions
 {

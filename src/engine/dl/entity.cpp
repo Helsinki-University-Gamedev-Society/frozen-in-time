@@ -17,6 +17,7 @@
  */
 
 #include "entity.hpp"
+#include <algorithm>
 
 using namespace Entity;
 
@@ -100,3 +101,28 @@ std::string Inventory::Deserialise(std::string from)
 	return from;
 }
 
+std::string Scene::Serialise() const
+{
+	std::string result {""};
+	result += filename
+		+ delim
+		+ data.Serialise()
+		+ delim
+		+ items.Serialise()
+		+ delim;
+	
+	std::vector<std::string, std::string> commandStrings;
+	std::for_each(mapCommandToAction.cbegin(), mapCommandToAction.cend(), [](std::pair<Entity<Command>, Entity<Action>>)
+			{
+				std::string command = item.first.Serialise();
+				if(mapCommandToAction.find(command) != );
+				}
+			});
+
+	for(auto commandString : commandStrings)
+	{
+		result += commandString + "\n\n";
+	}
+
+	return result;
+}
