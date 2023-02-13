@@ -18,7 +18,7 @@
 
 #include "../../include/game/cparser.hpp"
 #include "../../include/game/game.hpp"
-#include "../../include/state.hpp"
+#include "../../include/game/state.hpp"
 
 bool Game::InventoryContains(string name) {
     for(InvItem item : state.inventory.contents) {
@@ -82,12 +82,12 @@ void Game::ExecuteTent(std::string command)
 	}
 	if(cmd == "inspect computer")
 	{
-		ui->write(STORY::COMPUTER, "Gavin: \"Sorry C., I need the computer right now. Besides, you won’t need it to dig a hole.\"", Font::PRESENT_OTHER_CHARACTER);
+		ui->write(Story::COMPUTER, "Gavin: \"Sorry C., I need the computer right now. Besides, you won’t need it to dig a hole.\"", Font::PRESENT_OTHER_CHARACTER);
 		return;
 	}
 	if(cmd == "talk gavin")
 	{
-		ui->write(STORY::COMPUTER, "Gavin: \"Sorry C., but I really do need to finish this report. If you can’t find the tools they might be outside.\"", Font::PRESENT_OTHER_CHARACTER);
+		ui->write(Story::COMPUTER, "Gavin: \"Sorry C., but I really do need to finish this report. If you can’t find the tools they might be outside.\"", Font::PRESENT_OTHER_CHARACTER);
 		return;
 	}
 	if(cmd == "go outside" || cmd == "go south")
@@ -97,10 +97,10 @@ void Game::ExecuteTent(std::string command)
 	}
 	if(cmd == "go north" || cmd == "go east" || cmd == "go west")
 	{
-		ui->write(STORY::COMPUTER, "\"There is nothing in that direction.\"")
+		ui->write(Story::COMPUTER, "\"There is nothing in that direction.\"");
 	}
 	
-	ui->write(STORY::COMPUTER, "\"I should not be thinking such insane thoughts right now.\"", Font::PRESENT_PLAYER_THINKING);
+	ui->write(Story::COMPUTER, "\"I should not be thinking such insane thoughts right now.\"", Font::PRESENT_PLAYER_THINKING);
 }
 
 void Game::ExecuteDigsite(std::string command) {

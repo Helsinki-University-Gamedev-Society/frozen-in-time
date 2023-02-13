@@ -26,7 +26,9 @@ class Game
 {
 public:
 	Game(UI* ui);
-        void Execute(Story, std::string command);
+    void Execute(Story, std::string command);
+	void ChangeScene(Scene scene);
+
 private:
 	State state;
 	UI* ui;
@@ -37,10 +39,7 @@ private:
 	void ExecuteTent(std::string command);
     void ExecuteDigsite(std::string command);
 
-	void ChangeScene(Scene scene);
-
     bool InventoryContains(string name);
-
 };
 
 
