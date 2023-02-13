@@ -32,6 +32,7 @@ struct Item
 struct Inventory
 {
 	std::vector<Item*> contents;
+	std::string List();
 };
 
 enum Scene
@@ -43,6 +44,7 @@ enum Scene
 struct State
 {
 	Scene scene;
+	Story story;
 	Inventory inventory;
 	std::string track;
 };

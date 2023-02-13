@@ -17,6 +17,27 @@
  */
 
 #include "game.hpp"
+#include "state.hpp"
+
+Game::Game(UI* _ui)
+	: ui {_ui}
+{
+
+}
+
+bool Game::ExecuteBase(std::string command)
+{
+	if(command == "list")
+	{
+		ui->write(state.story, state.inventory.List());
+		return true;
+	}
+}
+
+void Game::ExecuteTent(std::string command)
+{
+
+}
 
 std::string Game::Execute(std::string command)
 {

@@ -16,4 +16,10 @@
  * =====================================================================================
  */
 
+#include <numeric>
 #include "state.hpp"
+
+std::string Inventory::List()
+{
+	return std::accumulate(contents.cbegin(), contents.cend(), "", [](Item* first, Item* second){ return first->name + ", " + second->name;});
+}
