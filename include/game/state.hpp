@@ -22,7 +22,7 @@
 #include <string>
 #include <vector>
 
-#include "ui/ui.hpp"
+#include "../ui/ui.hpp"
 
 struct InvItem
 {

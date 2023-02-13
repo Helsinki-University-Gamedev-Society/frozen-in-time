@@ -21,6 +21,7 @@ int main(int argc, char *argv[])
 
     while(not quit) {
     	ui.update(); // Update UI
+		game.ChangeScene(Scene::TENT);
 
     	UIEvent event;
     	while(ui.poll(&event)) { // Keep polling events until there are no more
