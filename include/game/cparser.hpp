@@ -1,15 +1,17 @@
 #include <map>
 #include <set>
 #include <string>
-#include <vector>
 
 using std::map;
 using std::set;
 using std::string;
-using std::vector;
 
 const map<string, string> SYNONYMS = {
     {"pick up", "take"},
+    {"investigate", "inspect"},
+    {"look at", "inspect"},
+    {"look around", "look"},
+    {"scout", "look"},
     {"the", ""},
     {"to", ""},
     {"with", ""},

@@ -139,12 +139,18 @@ void Game::ExecuteDigsite(std::string command) {
 	} else {
 	    ui->write(Story::COMPUTER, "Hmm… No, that didn’t work. I should try something else.", Font::PRESENT_PLAYER_THINKING);
 	}
+    } else if(cmd == "look") {
+	ui->write(Story::COMPUTER,
+		  "Fixing your eyes and thoughts once more unto the dig site itself, you spot a pickaxe, a shovel, and a chisel lying on and around some tables. "
+		  "Close to them, to your south, is the mound you have been investigating recently. Wrapped in a heavy winter coat, Dr. Blake Adams huddles around some maps laid out on a table. "
+		  "The entrance to the main tent stands to the north.",
+		  Font::PRESENT_NARRATION);
     }
 }
 
-std::string Game::Execute(Story story, std::string command)
+void Game::Execute(Story story, std::string command)
 {
-	if(!ExecuteBase(command)) return baseResponse;
+    // if(!ExecuteBase(command)) return baseResponse;
 
 	switch(state.scene)
 	{
@@ -152,9 +158,9 @@ std::string Game::Execute(Story story, std::string command)
 			return ExecuteTent(command);
 			break;
 		case(Scene::DIGSITE):
-		        return ExecuteDigsite(story, command);
+		        return ExecuteDigsite(command);
 			break;
 		default:
-			return "where the hell are you?";
+		        break;
 	}
 }
