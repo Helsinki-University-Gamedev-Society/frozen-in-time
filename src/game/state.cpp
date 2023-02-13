@@ -17,9 +17,11 @@
  */
 
 #include <numeric>
-#include "state.hpp"
+#include <string>
+
+#include "game/state.hpp"
 
 std::string Inventory::List()
 {
-	return std::accumulate(contents.cbegin(), contents.cend(), "", [](Item* first, Item* second){ return first->name + ", " + second->name;});
+    return std::accumulate(contents.cbegin(), contents.cend(), std::string(""), [](string acc, InvItem second){ return acc + ", " + second.name;});
 }

@@ -26,7 +26,7 @@ class Game
 {
 public:
 	Game(UI* ui);
-        std::string Execute(Story, std::string command);
+        void Execute(Story, std::string command);
 private:
 	State state;
 	UI* ui;
@@ -34,8 +34,8 @@ private:
 	std::string baseResponse;
 	
 	bool ExecuteBase(std::string command);
-	std::string ExecuteTent(std::string command);
-    std::string ExecuteDigsite(Story story, std::string command);
+	void ExecuteTent(std::string command);
+    void ExecuteDigsite(std::string command);
 
 	void ChangeScene(Scene scene);
 

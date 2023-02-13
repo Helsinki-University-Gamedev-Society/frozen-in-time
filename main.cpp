@@ -5,7 +5,7 @@
 
 #include "game/cparser.hpp"
 
-#include "src/game/game.hpp"
+#include "game/game.hpp"
 #include "ui/ui.hpp"
 #include "ui/ui_elements.hpp"
 #include "utils/file_access.hpp"

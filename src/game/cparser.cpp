@@ -1,9 +1,13 @@
 #include "game/cparser.hpp"
 
+#include <cctype>
 #include <iostream>
 #include <iterator>
 #include <numeric>
 #include <sstream>
+#include <vector>
+
+using std::vector;
 
 std::string rtrim(const std::string &s)
 {
@@ -47,7 +51,7 @@ string prettify_command(string input) {
 	    }
 	} else {
 	    // std::cout << cur_word << std::endl;
-	    cur_word += c;
+	    cur_word += tolower(c);
 	}
     }
     if(not cur_word.empty()) {
