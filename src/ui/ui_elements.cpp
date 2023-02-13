@@ -252,7 +252,7 @@ void UIComputer::render() {
 
 UITitleScreen::UITitleScreen(shared_ptr<GraphicsContext> ctx) 
     : ctx(ctx)
-    , texture_name(TEXTURE_TO_NAME.at(Texture::TITLE_SCREEEN)) {}
+    , texture_name(TEXTURE_TO_NAME.at(Texture::TITLE_SCREEN)) {}
 
 void UITitleScreen::render() {
     SDL_Rect viewport = ctx->viewport_from_layout(LAYOUT_BACKGROUND);
