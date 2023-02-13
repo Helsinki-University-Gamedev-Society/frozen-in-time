@@ -23,11 +23,15 @@ public:
     UIInventory(shared_ptr<GraphicsContext> ctx);
     void render();
 
+    void add_item(string name);
     void add_item(Item item);
+
+    void remove_item(string name);
+    void remove_item(Item item);
 private:
     shared_ptr<GraphicsContext> ctx;
 private:
-    vector<Item> items;
+    vector<string> items;
 };
 
 class UIMap {
@@ -44,10 +48,10 @@ private:
 
 class UIMessageLog {
 public:
-    UIMessageLog(shared_ptr<GraphicsContext> ctx, Font font, SDL_Color color, pair<int, int> dims);
+    UIMessageLog(shared_ptr<GraphicsContext> ctx, pair<int, int> dims);
     void render(SDL_Point top_left);
 
-    void add_message(string message);
+    void add_message(string message, Font font);
 private:
     Font font;
     SDL_Color color;
@@ -59,7 +63,7 @@ private:
 
 class UIInputField {
 public:
-    UIInputField(shared_ptr<GraphicsContext> ctx, Font font, SDL_Color color, pair<int, int> dims);
+    UIInputField(shared_ptr<GraphicsContext> ctx, Font font, pair<int, int> dims);
     void render(SDL_Point top_left);
 
     string get_content();
@@ -68,7 +72,6 @@ public:
     void clear();
 private:
     Font font;
-    SDL_Color color;
     pair<int, int> dims;
 
     string content;
@@ -102,6 +105,18 @@ public:
     UIMessageLog log;
     UIInputField input;
 private:
+    shared_ptr<GraphicsContext> ctx;
+};
+
+class UITitleScreen {
+public:
+    UITitleScreen(shared_ptr<GraphicsContext> ctx);
+    void render();
+
+    void set_texture(string name);
+private:
+    string texture_name;
+
     shared_ptr<GraphicsContext> ctx;
 };
 

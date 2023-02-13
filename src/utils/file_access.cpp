@@ -25,3 +25,9 @@ string FileAccessor::read_file(string path) {
     return std::string((std::istreambuf_iterator<char>(ifs)),
 		       (std::istreambuf_iterator<char>()));
 }
+
+void FileAccessor::write_file(string path, string contents) {
+    std::ofstream ofs(base_path / path);
+
+    ofs << contents;
+}

@@ -1,3 +1,6 @@
+#ifndef _UI_LAYOUT_
+#define _UI_LAYOUT_
+
 #include <SDL_rect.h>
 
 const SDL_Rect LAYOUT_BACKGROUND{0, 0, 384, 216};
@@ -21,3 +24,5 @@ const SDL_Rect LAYOUT_MAP{264, 108, 96, 96};
 const int MAX_ITEMS_IN_ROW = 5;
 
 const int LOG_MESSAGE_SPACING = 20;
+
+#endif // _UI_LAYOUT_

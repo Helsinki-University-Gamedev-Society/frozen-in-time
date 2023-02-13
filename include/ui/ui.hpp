@@ -63,8 +63,14 @@ public:
     bool poll(UIEvent *event);
 
     void write(Story story, string text);
+    void write(Story story, string text, Font font);
+
     void play_sound(string name);
+    void play_music(string name);
+
     void set_map_image(string name);
+    void add_inventory_item(string name);
+    void remove_inventory_item(string name);
 
     void render();
 private:
@@ -79,5 +85,7 @@ private:
     queue<UIEvent> events;
     shared_ptr<GraphicsContext> ctx;
 };
+
+UI init_UI();
 
 #endif // _UI_UI_

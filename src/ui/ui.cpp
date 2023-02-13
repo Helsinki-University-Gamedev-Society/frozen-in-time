@@ -15,69 +15,6 @@
 #include "ui/ui.hpp"
 #include "ui/ui_elements.hpp"
 
-GraphicsContext::GraphicsContext()
-    : window(SDL_CreateWindow(WINDOW_TITLE, SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, WINDOW_WIDTH, WINDOW_HEIGHT, 0))
-    , renderer(SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED))
-    , assets(AssetManager(renderer)) {}
-
-void GraphicsContext::play_sound(string sound) {
-    Mix_PlayChannel(-1, assets.get_sound(sound), 0);
-}
-
-void GraphicsContext::play_sound(Sound sound) {
-    Mix_PlayChannel(-1, assets.get_sound(sound), 0);
-}
-
-shared_ptr<GraphicsContext> init_graphics() {
-    if(SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO) < 0) {
-	printf("SDL could not initialize! SDL Error: %s\n", SDL_GetError());
-    }
-
-    if(Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 2048) < 0) {
-	printf("SDL_mixer could not initialize! SDL_mixer Error: %s\n", Mix_GetError());
-    }
-
-    if(TTF_Init() == -1) {
-	printf("SDL_ttf could not initialize! SDL_ttf Error: %s\n", TTF_GetError());
-    }
-
-    return std::make_shared<GraphicsContext>();
-}
-
-SDL_Rect GraphicsContext::game_viewport() {
-    int width, height;
-    SDL_GetWindowSize(window, &width, &height);
-
-    int game_width = std::min(width, 16 * height / 9);
-    int game_height = game_width * 9 / 16;
-
-    int top_left_x = (width - game_width) / 2;
-    int top_left_y = (height - game_height) / 2;
-
-    return SDL_Rect{top_left_x, top_left_y, game_width, game_height};
-}
-
-SDL_Rect GraphicsContext::viewport_from_layout(SDL_Rect layout) {
-    SDL_Rect game_rect = game_viewport();
-	
-    double scale = ((double) game_rect.w) / ((double) LAYOUT_BACKGROUND.w);
-
-    return SDL_Rect{
-	(int) (game_rect.x + layout.x * scale),
-	(int) (game_rect.y + layout.y * scale),
-	(int) (layout.w * scale),
-	(int) (layout.h * scale),
-    };
-}
-
-int GraphicsContext::width_from_layout_width(int layout_width) {
-    SDL_Rect game_rect = game_viewport();
-
-    double scale = ((double) game_rect.w) / ((double) LAYOUT_BACKGROUND.w);
-
-    return (int) (layout_width * scale);
-}
-
 UI::UI(shared_ptr<GraphicsContext> ctx)
     : ctx(ctx)
     , inventory(UIInventory(ctx))
@@ -93,6 +30,8 @@ UI::UI(shared_ptr<GraphicsContext> ctx)
     ctx->play_sound(Sound::DIARY_SLIDE);
 
     SDL_StartTextInput();
+
+    ctx->set_music_volume(0.05);
 }
 
 UI::~UI() {
@@ -126,7 +65,7 @@ void UI::update() {
 		    }
 		    content = diary.input.get_content();
 
-		    diary.log.add_message("> " + content);
+		    diary.log.add_message("> " + content, Font::PAST_WRITING);
 		    diary.input.clear();
 		} else {
 		    if(computer.input.get_content().empty()) {
@@ -134,7 +73,7 @@ void UI::update() {
 		    }
 		    content = computer.input.get_content();
 
-		    computer.log.add_message("> " + content);
+		    computer.log.add_message("> " + content, Font::PRESENT_PLAYER_SPEAKING);
 		    computer.input.clear();
 		}
 		events.push(UIEvent_SEND_COMMAND{current_story, content});
@@ -162,11 +101,16 @@ bool UI::poll(UIEvent *event) {
 }
 
 void UI::write(Story story, string text) {
+    Font font = story == Story::DIARY ? Font::PAST_WRITING : Font::PRESENT_NARRATION;
+	write(story, text, font);
+}
+
+void UI::write(Story story, string text, Font font) {
     if(story == Story::DIARY) {
 	ctx->play_sound(Sound::DIARY_SCRIBBLE);
-	diary.log.add_message(text);
+	diary.log.add_message(text, font);
     } else {
-	computer.log.add_message(text);
+	computer.log.add_message(text, font);
     }
 }
 
@@ -174,8 +118,20 @@ void UI::play_sound(string name) {
     ctx->play_sound(name);
 }
 
+void UI::play_music(string name) {
+    ctx->play_music(name);
+}
+
 void UI::set_map_image(string name) {
     map.set_texture(name);
+}
+
+void UI::add_inventory_item(string name) {
+    inventory.add_item(name);
+}
+
+void UI::remove_inventory_item(string name) {
+    inventory.remove_item(name);
 }
 
 void UI::render_background() {
@@ -209,4 +165,9 @@ void UI::render() {
     SDL_Delay(std::max(0.0, (1/fps - time_taken) * 1000));
 
     time_since_last_render = SDL_GetPerformanceCounter();
+}
+
+UI init_UI() {
+    auto ctx = init_graphics();
+    return UI(ctx);
 }

@@ -30,6 +30,7 @@ enum class Sound {
 
 enum class Texture {
     BACKGROUND = 0,
+    TITLE_SCREEN,
     MAP,
     DIARY,
     CARROT,
@@ -38,37 +39,54 @@ enum class Texture {
     CHISEL,
 };
 
+enum class Music {
+    THEME_TUNE = 0,
+};
+
 enum class Font {
-    COMPUTER_FONT = 0,
-    DIARY_FONT = 1,
+    PRESENT_PLAYER_SPEAKING = 0,
+    PRESENT_PLAYER_THINKING,
+    PRESENT_OTHER_CHARACTER,
+    PRESENT_NARRATION,
+
+    PAST_WRITING,
+};
+
+struct FontStyleSpec {
+    string name;
+    int size;
+    SDL_Color color;
+    string marker;
+};
+
+const map<Font, FontStyleSpec> FONT_TO_SPEC {
+    {{Font::PRESENT_PLAYER_SPEAKING, {"pixelfjverdana.regular.ttf", 15, {0xA0, 0xDB, 0x85, 0xFF}, ""}},
+     {Font::PRESENT_PLAYER_THINKING, {"pixelfjverdana.regular.ttf", 15, {0xA0, 0xDB, 0x85, 0xFF}, "*"}},
+     {Font::PRESENT_OTHER_CHARACTER, {"pixelfjverdana.regular.ttf", 15, {0xBC, 0xBC, 0xBC, 0xFF}, ""}},
+     {Font::PRESENT_NARRATION,       {"pixelfjverdana.regular.ttf", 15, {0xBC, 0xBC, 0xBC, 0xFF}, ""}},
+
+     {Font::PAST_WRITING,            {"dpcomic.regular.ttf",        40, {0x44, 0x44, 0x44, 0xFF}, ""}}}
 };
 
 const map<Texture, string> TEXTURE_TO_NAME = {
-    // {Texture::BACKGROUND, "dark-wood-background.jpg"},
-    {Texture::BACKGROUND, "background.png"},
-    // {Texture::MAP,        "diary-background.jpg"},
-    {Texture::MAP,        "parchment2.png"},
-    {Texture::DIARY,      "diary.png"},
-    {Texture::CARROT,     "vili-carrot.png"},
+    {Texture::BACKGROUND,   "background.png"},
+    {Texture::TITLE_SCREEN, "background.png"},
+    {Texture::MAP,          "parchment2.png"},
+    {Texture::DIARY,        "diary.png"},
 
-    {Texture::PICKAXE,    "item_pickaxe.png"},
-    {Texture::SHOVEL,     "item_shovel.png"},
-    {Texture::CHISEL,     "item_chisel.png"},
+    {Texture::CARROT,       "vili-carrot.png"},
+    {Texture::PICKAXE,      "item_pickaxe.png"},
+    {Texture::SHOVEL,       "item_shovel.png"},
+    {Texture::CHISEL,       "item_chisel.png"},
 };
 
 const map<Sound, string> SOUND_TO_NAME = {
-    {Sound::DIARY_SLIDE, "diary-sliding.wav"},
+    {Sound::DIARY_SLIDE,    "diary-sliding.wav"},
     {Sound::DIARY_SCRIBBLE, "diary-scribble.wav"},
 };
 
-const map<Font, string> FONT_TO_NAME = {
-    {Font::COMPUTER_FONT, "pixelfjverdana.regular.ttf"},
-    {Font::DIARY_FONT, "dpcomic.regular.ttf"},
-};
-
-const map<Font, int> FONT_TO_SIZE = {
-    {Font::COMPUTER_FONT, 15},
-    {Font::DIARY_FONT, 40},
+const map<Music, string> MUSIC_TO_NAME = {
+    {Music::THEME_TUNE, "paulstretched-uncertainty.ogg"}
 };
 
 const map<Item, Texture> ITEM_TO_TEXTURE = {
@@ -91,12 +109,16 @@ public:
 
     TTF_Font *get_font(string name, int size);
     TTF_Font *get_font(Font font);
+
+    Mix_Music *get_music(string name);
+    Mix_Music *get_music(Music music);
 private:
     void unload_assets();
 private:
     map<string, SDL_Texture *> textures;
     map<string, Mix_Chunk *> sounds;
     map<pair<string, int>, TTF_Font *> fonts;
+    map<string, Mix_Music *> musics;
 
     SDL_Renderer *renderer;
     FileAccessor accessor;

@@ -9,11 +9,11 @@
 
 int main(int argc, char *argv[])
 {
-    auto ctx = init_graphics();
-
-    UI ui = UI(ctx);
+    UI ui = init_UI();
 
     bool quit = false;
+
+    ui.play_music("paulstretched-uncertainty.ogg");
 
     while(not quit) {
 	ui.update(); // Update UI
@@ -25,8 +25,13 @@ int main(int argc, char *argv[])
 	    } else if(UIEvent_of_type<UIEvent_SEND_COMMAND>(event)) {
 		UIEvent_SEND_COMMAND command_event = std::get<UIEvent_SEND_COMMAND>(event);
 		if(command_event.command == "eat banana") {
+		    ui.add_inventory_item("item_pickaxe.png");
 		    ui.write(command_event.story, "Nom nom nom! What a great banana that was!!!");
 		    ui.set_map_image("world_map.png");
+		} else if(command_event.command == "uneat banana") {
+		    ui.remove_inventory_item("item_pickaxe.png");
+		    ui.write(command_event.story, "Blegh! Banana successfully regurgitated!");
+		    ui.set_map_image("world_map_present.png");
 		}
 	    }
 	}

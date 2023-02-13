@@ -21,6 +21,7 @@ public:
 
     string get_full_path(string relative_path);
     string read_file(string path);
+    void write_file(string path, string contents);
 private:
     std::filesystem::path base_path;
 };

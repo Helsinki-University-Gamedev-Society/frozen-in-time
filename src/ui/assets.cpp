@@ -65,7 +65,25 @@ TTF_Font *AssetManager::get_font(string name, int size) {
 }
 
 TTF_Font *AssetManager::get_font(Font font) {
-    return get_font(FONT_TO_NAME.at(font), FONT_TO_SIZE.at(font));
+    FontStyleSpec spec = FONT_TO_SPEC.at(font);
+    return get_font(spec.name, spec.size);
+}
+
+Mix_Music *AssetManager::get_music(string name) {
+    if(musics.count(name)) {
+	return musics[name];
+    } else {
+	Mix_Music *music;
+	if((music = Mix_LoadMUS(accessor.get_full_path("music/" + name).c_str())) == NULL) {
+	    std::cerr << "ERROR: Could not find music " << accessor.get_full_path("music/" + name).c_str() << std::endl;
+	}
+	musics[name] = music;
+	return music;
+    }
+}
+
+Mix_Music *AssetManager::get_music(Music music) {
+    return get_music(MUSIC_TO_NAME.at(music));
 }
 
 void AssetManager::unload_assets() {
@@ -79,5 +97,9 @@ void AssetManager::unload_assets() {
 
     for(const auto &[name, font] : fonts) {
 	TTF_CloseFont(font);
+    }
+
+    for(const auto &[name, music] : musics) {
+	Mix_FreeMusic(music);
     }
 }

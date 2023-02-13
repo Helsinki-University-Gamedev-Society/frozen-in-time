@@ -7,6 +7,7 @@
 #include <SDL_render.h>
 
 #include "ui/animations.hpp"
+#include "ui/assets.hpp"
 
 void Animation::start() {
     started = true;
@@ -50,11 +51,10 @@ bool EaseOutExpoAnimation::is_finished() {
     return current_time >= total_time;
 }
 
-FadeInText::FadeInText(shared_ptr<GraphicsContext> ctx, string content, Font font, SDL_Color color, int layout_width, double time)
+FadeInText::FadeInText(shared_ptr<GraphicsContext> ctx, string content, Font font, int layout_width, double time)
     : ctx(ctx)
     , content(content)
     , font(font)
-    , color(color)
     , layout_width(layout_width)
     , total_time(time) {}
 
@@ -70,7 +70,11 @@ SDL_Texture *FadeInText::get_current_texture() {
 
     if(last_width != width) {
 	SDL_DestroyTexture(current_texture);
-	Text text = Text(ctx->renderer, content, ctx->assets.get_font(font), color, width);
+
+	FontStyleSpec spec = FONT_TO_SPEC.at(font);
+	string marked_content = spec.marker + content + spec.marker;
+
+	Text text = Text(ctx->renderer, marked_content, ctx->assets.get_font(font), spec.color, width);
 	current_texture = text.get_texture();
     }
 
