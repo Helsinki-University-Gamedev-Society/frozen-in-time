@@ -24,18 +24,19 @@
 
 class Game
 {
+public:
+	Game(UI* ui);
+        std::string Execute(Story, std::string command);
+private:
 	State state;
 	UI* ui;
 
 	std::string baseResponse;
-
-	Game(UI* ui);
 	
 	bool ExecuteBase(std::string command);
 	std::string ExecuteTent(std::string command);
 	std::string ExecuteDigSite(std::string command);
 
-	std::string Execute(std::string command);
 };
 
 
