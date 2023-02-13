@@ -10,6 +10,7 @@ using std::vector;
 
 const map<string, string> SYNONYMS = {
     {"pick up", "take"},
+    {"the", ""},
     {"to", ""},
     {"with", ""},
 };

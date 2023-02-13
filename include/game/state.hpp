@@ -43,14 +43,28 @@ enum Scene
 	DIGSITE,
 };
 
+enum class MoundMaterial {
+    DIRT,
+    ROCK,
+    PERMAFROST,
+    NONE,
+};
+
+enum class BlakeState {
+    UNSPOKEN_TO,
+    GO_TO_WORK,
+    JOURNAL_FOUND,
+};
+
 struct State
 {
 	Scene scene;
 	Story story;
 	Inventory inventory;
 	std::string track;
-
-        bool blake_talked_to = false;
+    
+        BlakeState blake_state = BlakeState::UNSPOKEN_TO;
+        MoundMaterial mound_material = MoundMaterial::DIRT;
 };
 
 

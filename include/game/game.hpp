@@ -35,7 +35,7 @@ private:
 	
 	bool ExecuteBase(std::string command);
 	std::string ExecuteTent(std::string command);
-        std::string ExecuteDigsite(Story story, std::string command);
+        void ExecuteDigsite(std::string command);
 
         bool InventoryContains(string name);
 
